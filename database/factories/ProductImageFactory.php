@@ -9,7 +9,7 @@ class ProductImageFactory extends Factory
     public function definition(): array
     {
         return [
-            'image_url' => $this->faker->imageUrl(),
+            'image_url' => 'https://placehold.co/600x600',
             'alt_text' => $this->faker->sentence(),
             'sort_order' => $this->faker->numberBetween(0, 10),
             'is_primary' => false,
