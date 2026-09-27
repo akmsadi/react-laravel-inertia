@@ -22,7 +22,7 @@ class ProductController extends Controller
     {
         $product->load('category', 'images', 'variants.attributes');
 
-        return Inertia::render('products/show', [
+        return Inertia::render('products/Show', [
             'product' => $product,
         ]);
     }
