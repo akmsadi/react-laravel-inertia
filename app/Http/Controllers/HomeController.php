@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Events;
 use App\Models\Matches;
-use App\Models\Players;
-use App\Models\Teams;
+use App\Models\Player;
+use App\Models\Team;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -15,9 +15,9 @@ class HomeController extends Controller
     {
         $lastMatch = Matches::orderBy('scheduled_at', 'desc')->with('venue')->limit(1)->first();
         $nextMatch = Matches::where('scheduled_at', '>', date('Y-m-d H:i:s'))->where('match_status', '!=', 'archived')->orderBy('scheduled_at', 'asc')->with('venue')->limit(1)->first();
-        $players = Players::where('status', 'approved')->limit(10)->inRandomOrder()->get();
+        $players = Player::where('status', 'approved')->limit(10)->inRandomOrder()->get();
         $events = Events::with('images')->latest()->orderBy('id', 'desc')->limit(5)->get();
-        $teams = Teams::orderBy('name', 'asc')->get();
+        $teams = Team::orderBy('name', 'asc')->get();
 
         return Inertia::render('welcome', [
             'lastMatch' => $lastMatch,
@@ -25,8 +25,8 @@ class HomeController extends Controller
             'players' => $players,
             'events' => $events,
             'teams' => $teams,
-            'playerCount' => Players::where('status', 'approved')->count(),
-            'pendingCount' => Players::where('status', 'pending')->count(),
+            'playerCount' => Player::where('status', 'approved')->count(),
+            'pendingCount' => Player::where('status', 'pending')->count(),
         ]);
     }
 
