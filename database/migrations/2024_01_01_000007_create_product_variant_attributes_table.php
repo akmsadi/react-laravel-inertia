@@ -15,7 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('attribute_value_id');
             $table->timestamps();
 
-            $table->unique(['variant_id', 'attribute_id', 'attribute_value_id']);
+            $table->unique(['variant_id', 'attribute_id', 'attribute_value_id'], 'uniq_var_attr');
 
             $table->foreign('variant_id')
                 ->references('id')
