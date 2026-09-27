@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'category_id',
@@ -34,33 +35,21 @@ class Product extends Model
         'tax_rate' => 'decimal:2',
     ];
 
-    /**
-     * Get the category this product belongs to
-     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(ProductCategory::class);
     }
 
-    /**
-     * Get all variants for this product
-     */
     public function variants(): HasMany
     {
         return $this->hasMany(ProductVariant::class);
     }
 
-    /**
-     * Get all images for this product
-     */
     public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class);
     }
 
-    /**
-     * Get the primary image
-     */
     public function primaryImage(): HasMany
     {
         return $this->hasMany(ProductImage::class)->where('is_primary', true)->limit(1);

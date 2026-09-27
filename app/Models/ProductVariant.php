@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ProductVariant extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'product_id',
@@ -33,17 +34,11 @@ class ProductVariant extends Model
         'weight' => 'decimal:2',
     ];
 
-    /**
-     * Get the product this variant belongs to
-     */
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    /**
-     * Get all attributes for this variant
-     */
     public function attributes(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -51,7 +46,6 @@ class ProductVariant extends Model
             'product_variant_attributes',
             'variant_id',
             'attribute_value_id'
-        )->withPivot('attribute_id')
-            ->withTimestamps();
+        )->withPivot('attribute_id')->withTimestamps();
     }
 }

@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductCategory extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'slug',
@@ -22,25 +25,16 @@ class ProductCategory extends Model
         'is_active' => 'boolean',
     ];
 
-    /**
-     * Get products in this category
-     */
     public function products(): HasMany
     {
         return $this->hasMany(Product::class, 'category_id');
     }
 
-    /**
-     * Get child categories
-     */
     public function children(): HasMany
     {
         return $this->hasMany(ProductCategory::class, 'parent_id');
     }
 
-    /**
-     * Get parent category
-     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(ProductCategory::class, 'parent_id');
