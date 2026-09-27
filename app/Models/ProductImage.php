@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductImage extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'product_id',
         'image_url',
@@ -19,9 +22,6 @@ class ProductImage extends Model
         'is_primary' => 'boolean',
     ];
 
-    /**
-     * Get the product this image belongs to
-     */
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
