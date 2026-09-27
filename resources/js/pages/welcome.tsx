@@ -16,21 +16,25 @@ import {
 
 const slides = [
     {
+        key: "slide-1",
         image: "/assets/images/slider/slider-image-4.png",
         title: "Evergreen Team",
         subtitle: "Passion - Performance - Teamwork",
     },
     {
+        key: "slide-2",
         image: "/assets/images/slider/slider-image-5.jpg",
         title: "Match Day Ready",
         subtitle: "United We Play, United We Win",
     },
     {
+        key: "slide-3",
         image: "/assets/images/slider/slider-image-6.jpg",
         title: "Champions In Action",
         subtitle: "Building A Winning Legacy",
     },
     {
+        key: "slide-4",
         image: "/assets/images/slider/slider-image-7.jpg",
         title: "Champions In Action",
         subtitle: "Building A Winning Legacy",
@@ -145,7 +149,7 @@ export default function Welcome({
                     <CarouselContent className="ml-0">
                         {slides.map((slide) => (
                             <CarouselItem
-                                key={slide.title}
+                                key={slide.key}
                                 className="relative h-105 pl-0 sm:h-135 lg:h-150"
                             >
                                 <img
@@ -174,7 +178,7 @@ export default function Welcome({
                         {slides.map((slide, index) => (
                             <button
                                 type="button"
-                                key={slide.title}
+                                key={slide.key}
                                 aria-label={`Show ${slide.title}`}
                                 onClick={() => carouselApi?.scrollTo(index)}
                                 className={`h-1.5 w-8 transition ${index === activeSlide ? "bg-white" : "bg-white/40"}`}
