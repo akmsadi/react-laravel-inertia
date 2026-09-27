@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 
 export default function ProductShow() {
     const { product } = usePage().props;
@@ -16,7 +16,7 @@ export default function ProductShow() {
                     href="/products"
                     className="flex items-center text-blue-600 hover:text-blue-800 mb-8"
                 >
-                    <ChevronLeft className="w-5 h-5 mr-2" />
+                    <ChevronLeftIcon className="w-5 h-5 mr-2" />
                     Back to Products
                 </Link>
 
