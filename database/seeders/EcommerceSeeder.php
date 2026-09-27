@@ -59,7 +59,7 @@ class EcommerceSeeder extends Seeder
 
         // Create sample products
         Product::factory(10)
-            ->for($electronics)
+            ->state(['category_id' => $electronics->id])
             ->create()
             ->each(function (Product $product) {
                 ProductImage::factory(3)->create([
@@ -68,12 +68,12 @@ class EcommerceSeeder extends Seeder
             });
 
         Product::factory(15)
-            ->for($clothing)
+            ->state(['category_id' => $clothing->id])
             ->create()
             ->each(function (Product $product) {
                 // Create variants for clothing
                 ProductVariant::factory(4)
-                    ->for($product)
+                    ->state(['product_id' => $product->id])
                     ->create();
             });
     }
