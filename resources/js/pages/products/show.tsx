@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, usePage } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
 import { ChevronLeft } from "lucide-react";
 
 type ProductImage = {
@@ -30,8 +30,7 @@ type PageProps = {
     product: Product;
 };
 
-export default function ProductShow() {
-    const { product } = usePage<PageProps>().props;
+export default function ProductShow({ product }: PageProps) {
     const [selectedImage, setSelectedImage] = useState<ProductImage | null>(
         product.images.length > 0 ? product.images[0] : null,
     );

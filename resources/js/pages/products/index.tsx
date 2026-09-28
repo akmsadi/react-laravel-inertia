@@ -1,9 +1,29 @@
-import React from "react";
-import { Link, usePage } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
 
-export default function ProductsIndex() {
-    const { products } = usePage().props;
+type Product = {
+    id: number;
+    name: string;
+    images: { image_url: string }[];
+    category: { name: string };
+    base_price: string;
+    stock_quantity: number;
+    variants: { id: number }[];
+};
 
+type PaginationLink = {
+    url: string | null;
+    label: string;
+    active: boolean;
+};
+
+type PageProps = {
+    products: {
+        data: Product[];
+        links: PaginationLink[];
+    };
+};
+
+export default function ProductsIndex({ products }: PageProps) {
     return (
         <div className="min-h-screen bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 py-12">
