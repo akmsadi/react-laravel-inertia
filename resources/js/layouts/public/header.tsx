@@ -69,6 +69,14 @@ export default function Header() {
                         Join
                     </a>
 
+                    <a
+                        href="/#products"
+                        onClick={() => setMenuOpen(false)}
+                        className="px-3 py-2 text-center text-sm uppercase tracking-widest transition hover:bg-[#1f7a3d] hover:text-white"
+                    >
+                        Products
+                    </a>
+
                     {auth.user ? (
                         <Link
                             href="/"

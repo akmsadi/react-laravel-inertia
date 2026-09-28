@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Events;
 use App\Models\Matches;
 use App\Models\Player;
+use App\Models\Product;
 use App\Models\Team;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -18,6 +19,11 @@ class HomeController extends Controller
         $players = Player::where('status', 'approved')->limit(10)->inRandomOrder()->get();
         $events = Events::with('images')->latest()->orderBy('id', 'desc')->limit(5)->get();
         $teams = Team::orderBy('name', 'asc')->get();
+        $products = Product::with('category', 'primaryImage')
+            ->where('is_active', true)
+            ->inRandomOrder()
+            ->limit(6)
+            ->get();
 
         return Inertia::render('welcome', [
             'lastMatch' => $lastMatch,
@@ -27,6 +33,7 @@ class HomeController extends Controller
             'teams' => $teams,
             'playerCount' => Player::where('status', 'approved')->count(),
             'pendingCount' => Player::where('status', 'pending')->count(),
+            'products' => $products,
         ]);
     }
 

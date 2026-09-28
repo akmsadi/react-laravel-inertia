@@ -3,7 +3,7 @@ import { ArrowUp } from "lucide-react";
 export default function Footer() {
     return (
         <>
-            <footer className="border-t-[5px] border-[#1f7a3d] bg-white py-7 text-center text-sm text-zinc-600">
+            <footer className="py-7 text-center text-sm text-white bg-[#1f7a3d]">
                 Copyright 2026 Evergreen Team. All rights reserved.
             </footer>
 

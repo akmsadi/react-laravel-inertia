@@ -104,6 +104,7 @@ interface WelcomeProps {
     teams: any[];
     playerCount: number;
     pendingCount: number;
+    products: any[];
 }
 
 export default function Welcome({
@@ -114,15 +115,16 @@ export default function Welcome({
     teams,
     playerCount,
     pendingCount,
+    products,
 }: WelcomeProps) {
-    const { auth, flash } = usePage().props;
-    const dashboardUrl = "/";
+    const { flash } = usePage().props;
     const status = (flash as { status?: string } | undefined)?.status;
 
     const [carouselApi, setCarouselApi] = useState<CarouselApi>();
     const [activeSlide, setActiveSlide] = useState(0);
     const [activeEvent, setActiveEvent] = useState(0);
-    const [menuOpen, setMenuOpen] = useState(false);
+
+    console.log(products);
 
     const activeImages = events[activeEvent]?.images ?? [];
 
@@ -144,7 +146,8 @@ export default function Welcome({
         <>
             <Head title="Welcome" />
 
-            <section className="relative overflow-hidden">
+            {/* Slider section */}
+            <section id="slider" className="relative overflow-hidden">
                 <Carousel setApi={setCarouselApi} opts={{ loop: true }}>
                     <CarouselContent className="ml-0">
                         {slides.map((slide) => (
@@ -187,8 +190,13 @@ export default function Welcome({
                     </div>
                 </Carousel>
             </section>
+            {/* Slider section */}
 
-            <section className="mx-auto max-w-[1600px] px-5 py-16 sm:px-8 sm:py-24">
+            {/* Hero section */}
+            <section
+                id="hero"
+                className="mx-auto max-w-[1600px] px-5 py-16 sm:px-8 sm:py-24"
+            >
                 <div className="grid gap-10 lg:grid-cols-[1.35fr_.95fr] lg:items-stretch">
                     <div>
                         <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#1f7a3d]">
@@ -282,7 +290,9 @@ export default function Welcome({
                     </aside>
                 </div>
             </section>
+            {/* Hero section */}
 
+            {/* Teams section */}
             <section id="teams" className="bg-white py-16 sm:py-24">
                 <div className="mx-auto max-w-[1600px] px-5 sm:px-8">
                     <SectionHeading
@@ -315,7 +325,9 @@ export default function Welcome({
                     </div>
                 </div>
             </section>
+            {/* Teams section */}
 
+            {/* Members section */}
             <section id="members" className="py-16 sm:py-24">
                 <div className="mx-auto max-w-[1600px] px-5 sm:px-8">
                     <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
@@ -352,7 +364,9 @@ export default function Welcome({
                     </div>
                 </div>
             </section>
+            {/* Members section */}
 
+            {/* Gallery section */}
             <section id="gallery" className="bg-white py-16 sm:py-24">
                 <div className="mx-auto max-w-[1600px] px-5 sm:px-8">
                     <SectionHeading
@@ -418,7 +432,9 @@ export default function Welcome({
                     )}
                 </div>
             </section>
+            {/* Gallery section */}
 
+            {/* Join section */}
             <section
                 id="join"
                 className="mx-auto max-w-[1600px] px-5 py-16 sm:px-8 sm:py-24"
@@ -529,6 +545,55 @@ export default function Welcome({
                     />
                 </div>
             </section>
+            {/* Join section */}
+
+            {/* Products section */}
+            <section id="products" className="bg-white py-16 sm:py-24">
+                <div className="mx-auto max-w-[1600px] px-5 sm:px-8">
+                    <SectionHeading
+                        title="Recent Products"
+                        copy="Check out our latest products available for purchase."
+                    />
+                    <Carousel className="mt-10">
+                        <CarouselContent>
+                            {products.map((product) => (
+                                <CarouselItem
+                                    key={product.id}
+                                    className="md:basis-1/2 lg:basis-1/3"
+                                >
+                                    <div className="overflow-hidden rounded-lg border">
+                                        {product.primary_image ? (
+                                            <img
+                                                src={
+                                                    product.primary_image
+                                                        .image_url
+                                                }
+                                                alt={product.name}
+                                                className="w-full aspect-[4/3] object-cover transition"
+                                            />
+                                        ) : (
+                                            <div className="w-full aspect-[4/3] flex items-center justify-center text-gray-400">
+                                                No Image
+                                            </div>
+                                        )}
+
+                                        <div className="p-4">
+                                            <h3 className="text-lg font-medium">
+                                                {product.name}
+                                            </h3>
+
+                                            <p className="mt-2 text-sm text-gray-600">
+                                                {product.short_description}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </CarouselItem>
+                            ))}
+                        </CarouselContent>
+                    </Carousel>
+                </div>
+            </section>
+            {/* Products section */}
         </>
     );
 }
