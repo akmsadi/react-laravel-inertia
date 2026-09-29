@@ -1,7 +1,8 @@
-import { Form, Link } from '@inertiajs/react';
-import { ArrowLeft, Check, ShoppingCart, Trash2 } from 'lucide-react';
-import CartController from '@/actions/App/Http/Controllers/CartController';
-import ProductController from '@/actions/App/Http/Controllers/ProductController';
+import { Form, Link } from "@inertiajs/react";
+import { ArrowLeft, Check, ShoppingCart, Trash2 } from "lucide-react";
+import CartController from "@/actions/App/Http/Controllers/CartController";
+import ProductController from "@/actions/App/Http/Controllers/ProductController";
+import { index as checkoutIndex } from "@/routes/checkout";
 
 type CartItem = {
     key: string;
@@ -47,7 +48,7 @@ export default function CartIndex({ items, itemCount, subtotal }: PageProps) {
                             Your cart
                         </h1>
                         <p className="mt-1 text-sm text-zinc-600">
-                            {itemCount} {itemCount === 1 ? 'item' : 'items'}
+                            {itemCount} {itemCount === 1 ? "item" : "items"}
                         </p>
                     </div>
                     <ShoppingCart
@@ -124,7 +125,7 @@ export default function CartIndex({ items, itemCount, subtotal }: PageProps) {
                                                             (attribute) =>
                                                                 `${attribute.name}: ${attribute.value}`,
                                                         )
-                                                        .join(' · ')}
+                                                        .join(" · ")}
                                                 </p>
                                             )}
                                             {item.sku && (
@@ -151,7 +152,7 @@ export default function CartIndex({ items, itemCount, subtotal }: PageProps) {
                                                             className="sr-only"
                                                             htmlFor={`quantity-${item.key}`}
                                                         >
-                                                            Quantity for{' '}
+                                                            Quantity for{" "}
                                                             {item.product_name}
                                                         </label>
                                                         <input
@@ -212,7 +213,7 @@ export default function CartIndex({ items, itemCount, subtotal }: PageProps) {
                                                 {formatPrice(item.line_total)}
                                             </p>
                                             <p className="text-sm text-zinc-600">
-                                                {formatPrice(item.unit_price)}{' '}
+                                                {formatPrice(item.unit_price)}{" "}
                                                 each
                                             </p>
                                         </div>
@@ -255,6 +256,12 @@ export default function CartIndex({ items, itemCount, subtotal }: PageProps) {
                                 <span>Subtotal</span>
                                 <span>{formatPrice(subtotal)}</span>
                             </div>
+                            <Link
+                                href={checkoutIndex().url}
+                                className="mt-2 flex items-center justify-center rounded-md bg-[#1f7a3d] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#176331]"
+                            >
+                                Proceed to checkout
+                            </Link>
                         </aside>
                     </div>
                 )}

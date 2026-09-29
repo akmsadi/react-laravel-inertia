@@ -42,6 +42,7 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user' => $user,
+                'customer' => $request->user('customer'),
             ],
             'flash' => [
                 'status' => fn () => $request->session()->get('status'),

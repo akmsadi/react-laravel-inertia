@@ -10,8 +10,20 @@ export type User = {
     [key: string]: unknown;
 };
 
+export type Customer = {
+    id: number;
+    name: string;
+    email: string;
+    phone: string | null;
+    email_verified_at: string | null;
+    created_at: string;
+    updated_at: string;
+    [key: string]: unknown;
+};
+
 export type Auth = {
-    user: User;
+    user: User | null;
+    customer: Customer | null;
 };
 
 export type Passkey = {

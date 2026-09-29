@@ -1,13 +1,17 @@
-import { Link, usePage } from '@inertiajs/react';
-import { Menu, ShoppingCart, X } from 'lucide-react';
-import { useState } from 'react';
-import CartController from '@/actions/App/Http/Controllers/CartController';
-import { login } from '@/routes';
+import { Link, usePage } from "@inertiajs/react";
+import { Menu, ShoppingCart, X } from "lucide-react";
+import { useState } from "react";
+import CartController from "@/actions/App/Http/Controllers/CartController";
+import AuthenticatedCustomerSessionController from "@/actions/App/Http/Controllers/Customer/AuthenticatedCustomerSessionController";
+import {
+    login as customerLogin,
+    register as customerRegister,
+} from "@/routes/customer";
 
 export default function Header() {
     const { auth, cartItemCount } = usePage().props;
     const [menuOpen, setMenuOpen] = useState(false);
-    const itemCount = typeof cartItemCount === 'number' ? cartItemCount : 0;
+    const itemCount = typeof cartItemCount === "number" ? cartItemCount : 0;
 
     return (
         <header className="sticky top-0 z-30 bg-white/95 backdrop-blur">
@@ -36,7 +40,7 @@ export default function Header() {
 
                 <div
                     className={`${
-                        menuOpen ? 'flex' : 'hidden'
+                        menuOpen ? "flex" : "hidden"
                     } absolute inset-x-0 top-full flex-col border-b border-zinc-200 bg-white px-5 py-4 lg:static lg:flex lg:flex-row lg:items-center lg:gap-7 lg:border-0 lg:bg-transparent lg:p-0`}
                 >
                     <a
@@ -93,21 +97,18 @@ export default function Header() {
                         )}
                     </Link>
 
-                    {auth.user ? (
+                    {auth.customer && (
                         <Link
-                            href="/"
+                            href={
+                                AuthenticatedCustomerSessionController.destroy()
+                                    .url
+                            }
+                            method="post"
+                            as="button"
                             onClick={() => setMenuOpen(false)}
                             className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                         >
-                            Dashboard
-                        </Link>
-                    ) : (
-                        <Link
-                            href={login()}
-                            onClick={() => setMenuOpen(false)}
-                            className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
-                        >
-                            Admin
+                            Log out ({auth.customer.name})
                         </Link>
                     )}
                 </div>
