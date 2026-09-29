@@ -1,11 +1,13 @@
-import { Link, usePage } from "@inertiajs/react";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
-import { login } from "@/routes";
+import { Link, usePage } from '@inertiajs/react';
+import { Menu, ShoppingCart, X } from 'lucide-react';
+import { useState } from 'react';
+import CartController from '@/actions/App/Http/Controllers/CartController';
+import { login } from '@/routes';
 
 export default function Header() {
-    const { auth } = usePage().props;
+    const { auth, cartItemCount } = usePage().props;
     const [menuOpen, setMenuOpen] = useState(false);
+    const itemCount = typeof cartItemCount === 'number' ? cartItemCount : 0;
 
     return (
         <header className="sticky top-0 z-30 bg-white/95 backdrop-blur">
@@ -34,13 +36,13 @@ export default function Header() {
 
                 <div
                     className={`${
-                        menuOpen ? "flex" : "hidden"
+                        menuOpen ? 'flex' : 'hidden'
                     } absolute inset-x-0 top-full flex-col border-b border-zinc-200 bg-white px-5 py-4 lg:static lg:flex lg:flex-row lg:items-center lg:gap-7 lg:border-0 lg:bg-transparent lg:p-0`}
                 >
                     <a
                         href="/#teams"
                         onClick={() => setMenuOpen(false)}
-                        className="px-3 py-2 text-center text-sm uppercase tracking-widest transition hover:bg-[#1f7a3d] hover:text-white"
+                        className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                     >
                         Teams
                     </a>
@@ -48,7 +50,7 @@ export default function Header() {
                     <a
                         href="/#members"
                         onClick={() => setMenuOpen(false)}
-                        className="px-3 py-2 text-center text-sm uppercase tracking-widest transition hover:bg-[#1f7a3d] hover:text-white"
+                        className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                     >
                         Members
                     </a>
@@ -56,7 +58,7 @@ export default function Header() {
                     <a
                         href="/#gallery"
                         onClick={() => setMenuOpen(false)}
-                        className="px-3 py-2 text-center text-sm uppercase tracking-widest transition hover:bg-[#1f7a3d] hover:text-white"
+                        className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                     >
                         Gallery
                     </a>
@@ -64,24 +66,38 @@ export default function Header() {
                     <a
                         href="/#join"
                         onClick={() => setMenuOpen(false)}
-                        className="px-3 py-2 text-center text-sm uppercase tracking-widest transition hover:bg-[#1f7a3d] hover:text-white"
+                        className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                     >
                         Join
                     </a>
 
-                    <a
-                        href="/#products"
+                    <Link
+                        href="/products"
                         onClick={() => setMenuOpen(false)}
-                        className="px-3 py-2 text-center text-sm uppercase tracking-widest transition hover:bg-[#1f7a3d] hover:text-white"
+                        className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                     >
                         Products
-                    </a>
+                    </Link>
+
+                    <Link
+                        href={CartController.index.url()}
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center justify-center gap-2 px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
+                    >
+                        <ShoppingCart size={16} aria-hidden="true" />
+                        <span>Cart</span>
+                        {itemCount > 0 && (
+                            <span className="grid min-w-5 place-items-center rounded-full bg-[#1f7a3d] px-1.5 py-0.5 text-xs font-semibold text-white">
+                                {itemCount}
+                            </span>
+                        )}
+                    </Link>
 
                     {auth.user ? (
                         <Link
                             href="/"
                             onClick={() => setMenuOpen(false)}
-                            className="px-3 py-2 text-center text-sm uppercase tracking-widest transition hover:bg-[#1f7a3d] hover:text-white"
+                            className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                         >
                             Dashboard
                         </Link>
@@ -89,7 +105,7 @@ export default function Header() {
                         <Link
                             href={login()}
                             onClick={() => setMenuOpen(false)}
-                            className="px-3 py-2 text-center text-sm uppercase tracking-widest transition hover:bg-[#1f7a3d] hover:text-white"
+                            className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                         >
                             Admin
                         </Link>

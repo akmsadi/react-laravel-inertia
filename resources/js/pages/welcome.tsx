@@ -1,10 +1,8 @@
 import { Form, Head, Link, usePage } from "@inertiajs/react";
-import { dashboard, login } from "@/routes";
 import InputError from "@/components/input-error";
 import { Spinner } from "@/components/ui/spinner";
 import { store } from "@/routes/player-registration";
 import { useEffect, useState } from "react";
-import { ArrowUp, Menu, X } from "lucide-react";
 import {
     Carousel,
     CarouselContent,
@@ -561,7 +559,10 @@ export default function Welcome({
                                     key={product.id}
                                     className="md:basis-1/2 lg:basis-1/3"
                                 >
-                                    <div className="overflow-hidden rounded-lg border">
+                                    <Link
+                                        className="overflow-hidden rounded-lg border"
+                                        href={`/products/${product.id}`}
+                                    >
                                         {product.primary_image ? (
                                             <img
                                                 src={
@@ -569,10 +570,10 @@ export default function Welcome({
                                                         .image_url
                                                 }
                                                 alt={product.name}
-                                                className="w-full aspect-[4/3] object-cover transition"
+                                                className="w-full aspect-4/3 object-cover transition"
                                             />
                                         ) : (
-                                            <div className="w-full aspect-[4/3] flex items-center justify-center text-gray-400">
+                                            <div className="w-full aspect-4/3 flex items-center justify-center text-gray-400">
                                                 No Image
                                             </div>
                                         )}
@@ -586,7 +587,7 @@ export default function Welcome({
                                                 {product.short_description}
                                             </p>
                                         </div>
-                                    </div>
+                                    </Link>
                                 </CarouselItem>
                             ))}
                         </CarouselContent>

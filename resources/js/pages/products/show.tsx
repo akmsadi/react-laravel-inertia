@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { Link } from "@inertiajs/react";
-import { ChevronLeft } from "lucide-react";
+import React, { useState } from 'react';
+import { Form, Link } from '@inertiajs/react';
+import { ChevronLeft } from 'lucide-react';
+import CartController from '@/actions/App/Http/Controllers/CartController';
 
 type ProductImage = {
     id: number;
@@ -12,9 +13,12 @@ type ProductVariant = {
     name: string | null;
     sku: string;
     price: string | null;
+    stock_quantity: number;
+    is_active: boolean;
 };
 
 type Product = {
+    id: number;
     name: string;
     category: { name: string };
     images: ProductImage[];
@@ -36,29 +40,39 @@ export default function ProductShow({ product }: PageProps) {
     );
     const [selectedVariant, setSelectedVariant] =
         useState<ProductVariant | null>(null);
+    const hasVariants = product.variants.length > 0;
+    const canAddToCart = selectedVariant
+        ? selectedVariant.is_active && selectedVariant.stock_quantity > 0
+        : !hasVariants && product.stock_quantity > 0;
+    const displayedStock = selectedVariant
+        ? selectedVariant.stock_quantity
+        : hasVariants
+          ? null
+          : product.stock_quantity;
+    const displayedPrice = selectedVariant?.price ?? product.base_price;
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <div className="max-w-7xl mx-auto px-4 py-8">
+            <div className="mx-auto max-w-7xl px-4 py-8">
                 <Link
                     href="/products"
-                    className="flex items-center text-blue-600 hover:text-blue-800 mb-8"
+                    className="mb-8 flex items-center text-blue-600 hover:text-blue-800"
                 >
-                    <ChevronLeft className="w-5 h-5 mr-2" />
+                    <ChevronLeft className="mr-2 h-5 w-5" />
                     Back to Products
                 </Link>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white rounded-lg shadow-md p-8">
+                <div className="grid grid-cols-1 gap-8 rounded-lg bg-white p-8 shadow-md lg:grid-cols-2">
                     <div>
-                        <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden mb-4">
+                        <div className="mb-4 aspect-square overflow-hidden rounded-lg bg-gray-200">
                             {selectedImage ? (
                                 <img
                                     src={selectedImage.image_url}
                                     alt={product.name}
-                                    className="w-full h-full object-cover"
+                                    className="h-full w-full object-cover"
                                 />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                <div className="flex h-full w-full items-center justify-center text-gray-400">
                                     No Image
                                 </div>
                             )}
@@ -70,16 +84,16 @@ export default function ProductShow({ product }: PageProps) {
                                     <button
                                         key={image.id}
                                         onClick={() => setSelectedImage(image)}
-                                        className={`w-20 h-20 rounded border-2 overflow-hidden ${
+                                        className={`h-20 w-20 overflow-hidden rounded border-2 ${
                                             selectedImage?.id === image.id
-                                                ? "border-blue-600"
-                                                : "border-gray-200 hover:border-gray-400"
+                                                ? 'border-blue-600'
+                                                : 'border-gray-200 hover:border-gray-400'
                                         }`}
                                     >
                                         <img
                                             src={image.image_url}
                                             alt="thumbnail"
-                                            className="w-full h-full object-cover"
+                                            className="h-full w-full object-cover"
                                         />
                                     </button>
                                 ))}
@@ -89,7 +103,7 @@ export default function ProductShow({ product }: PageProps) {
 
                     <div>
                         <div className="mb-6">
-                            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                            <h1 className="mb-2 text-3xl font-bold text-gray-900">
                                 {product.name}
                             </h1>
                             <p className="text-gray-600">
@@ -99,33 +113,38 @@ export default function ProductShow({ product }: PageProps) {
 
                         <div className="mb-6">
                             <span className="text-4xl font-bold text-gray-900">
-                                ${parseFloat(product.base_price).toFixed(2)}
+                                ${parseFloat(displayedPrice).toFixed(2)}
                             </span>
                             {product.tax_rate > 0 && (
-                                <p className="text-sm text-gray-500 mt-2">
+                                <p className="mt-2 text-sm text-gray-500">
                                     Tax: {product.tax_rate}%
                                 </p>
                             )}
                         </div>
 
                         <div className="mb-6">
-                            {product.stock_quantity > 0 ? (
-                                <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                                    In Stock ({product.stock_quantity}{" "}
-                                    available)
+                            {displayedStock === null ? (
+                                <span className="text-sm text-gray-600">
+                                    Select a variant to check availability.
+                                </span>
+                            ) : displayedStock > 0 &&
+                              (!selectedVariant ||
+                                  selectedVariant.is_active) ? (
+                                <span className="inline-block rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
+                                    In Stock ({displayedStock} available)
                                 </span>
                             ) : (
-                                <span className="inline-block px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
+                                <span className="inline-block rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-800">
                                     Out of Stock
                                 </span>
                             )}
                         </div>
 
                         <div className="mb-8">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                            <h3 className="mb-3 text-lg font-semibold text-gray-900">
                                 Description
                             </h3>
-                            <p className="text-gray-700 leading-relaxed">
+                            <p className="leading-relaxed text-gray-700">
                                 {product.description ||
                                     product.short_description}
                             </p>
@@ -133,21 +152,30 @@ export default function ProductShow({ product }: PageProps) {
 
                         {product.variants.length > 0 && (
                             <div className="mb-8">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                                <h3 className="mb-4 text-lg font-semibold text-gray-900">
                                     Variants
                                 </h3>
                                 <div className="space-y-3">
                                     {product.variants.map((variant) => (
                                         <button
                                             key={variant.id}
+                                            type="button"
                                             onClick={() =>
                                                 setSelectedVariant(variant)
                                             }
-                                            className={`w-full p-3 border-2 rounded-lg text-left transition ${
+                                            disabled={
+                                                !variant.is_active ||
+                                                variant.stock_quantity === 0
+                                            }
+                                            aria-pressed={
                                                 selectedVariant?.id ===
                                                 variant.id
-                                                    ? "border-blue-600 bg-blue-50"
-                                                    : "border-gray-200 hover:border-gray-400"
+                                            }
+                                            className={`w-full rounded-lg border-2 p-3 text-left transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                                                selectedVariant?.id ===
+                                                variant.id
+                                                    ? 'border-blue-600 bg-blue-50'
+                                                    : 'border-gray-200 hover:border-gray-400'
                                             }`}
                                         >
                                             <p className="font-medium text-gray-900">
@@ -158,7 +186,7 @@ export default function ProductShow({ product }: PageProps) {
                                                 SKU: {variant.sku}
                                             </p>
                                             {variant.price && (
-                                                <p className="text-sm font-semibold text-blue-600 mt-1">
+                                                <p className="mt-1 text-sm font-semibold text-blue-600">
                                                     $
                                                     {parseFloat(
                                                         variant.price,
@@ -171,18 +199,64 @@ export default function ProductShow({ product }: PageProps) {
                             </div>
                         )}
 
-                        <button
-                            className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition ${
-                                product.stock_quantity > 0
-                                    ? "bg-blue-600 hover:bg-blue-700"
-                                    : "bg-gray-400 cursor-not-allowed"
-                            }`}
-                            disabled={product.stock_quantity === 0}
+                        <Form
+                            action={CartController.store.url(product.id)}
+                            method="post"
+                            options={{ preserveScroll: true }}
+                            className="space-y-3"
                         >
-                            {product.stock_quantity > 0
-                                ? "Add to Cart"
-                                : "Out of Stock"}
-                        </button>
+                            {({ processing, errors, recentlySuccessful }) => (
+                                <>
+                                    <input
+                                        type="hidden"
+                                        name="variant_id"
+                                        value={selectedVariant?.id ?? ''}
+                                        readOnly
+                                    />
+                                    {errors.variant_id && (
+                                        <p
+                                            className="text-sm text-red-600"
+                                            role="alert"
+                                        >
+                                            {errors.variant_id}
+                                        </p>
+                                    )}
+                                    {errors.cart && (
+                                        <p
+                                            className="text-sm text-red-600"
+                                            role="alert"
+                                        >
+                                            {errors.cart}
+                                        </p>
+                                    )}
+                                    <button
+                                        type="submit"
+                                        className={`w-full rounded-lg px-6 py-3 font-semibold text-white transition ${
+                                            canAddToCart
+                                                ? 'bg-blue-600 hover:bg-blue-700'
+                                                : 'cursor-not-allowed bg-gray-400'
+                                        }`}
+                                        disabled={!canAddToCart || processing}
+                                    >
+                                        {processing
+                                            ? 'Adding...'
+                                            : canAddToCart
+                                              ? 'Add to Cart'
+                                              : hasVariants && !selectedVariant
+                                                ? 'Select a Variant'
+                                                : 'Out of Stock'}
+                                    </button>
+                                    {recentlySuccessful && (
+                                        <p
+                                            className="text-sm text-green-700"
+                                            role="status"
+                                        >
+                                            Added to cart.
+                                        </p>
+                                    )}
+                                </>
+                            )}
+                        </Form>
                     </div>
                 </div>
             </div>
