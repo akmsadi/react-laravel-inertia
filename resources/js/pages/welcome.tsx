@@ -1,6 +1,7 @@
 import { Form, Head, Link, usePage } from "@inertiajs/react";
 import InputError from "@/components/input-error";
 import { Spinner } from "@/components/ui/spinner";
+import { store as newsletterStore } from "@/routes/newsletter";
 import { store } from "@/routes/player-registration";
 import { useEffect, useState } from "react";
 import {
@@ -595,6 +596,79 @@ export default function Welcome({
                 </div>
             </section>
             {/* Products section */}
+
+            {/* Newsletter section */}
+            <section id="newsletter" className="py-16 sm:py-24">
+                <div className="mx-auto grid max-w-[1600px] gap-10 px-5 sm:px-8 lg:grid-cols-2 lg:items-center lg:gap-20">
+                    <div>
+                        <p className="text-sm font-bold uppercase tracking-[0.14em]">
+                            Stay in the game
+                        </p>
+                        <h2 className="mt-3 font-display text-5xl uppercase leading-none sm:text-6xl">
+                            Join our newsletter
+                        </h2>
+                        <p className="mt-5 max-w-xl text-base leading-8">
+                            Get match updates, club news, event invitations, and
+                            the latest Evergreen products delivered to your
+                            inbox.
+                        </p>
+                    </div>
+                    <Form
+                        {...newsletterStore.form()}
+                        resetOnSuccess
+                        disableWhileProcessing
+                        options={{
+                            preserveScroll: true,
+                            preserveState: true,
+                        }}
+                        className="bg-white p-6 text-zinc-950 shadow-[0_5px_18px_rgba(0,0,0,.12)] sm:p-8"
+                    >
+                        {({ processing, errors, wasSuccessful }) => (
+                            <>
+                                <label
+                                    htmlFor="newsletter-email"
+                                    className="text-sm font-bold uppercase tracking-widest"
+                                >
+                                    Email address
+                                </label>
+                                <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+                                    <input
+                                        id="newsletter-email"
+                                        name="email"
+                                        type="email"
+                                        required
+                                        placeholder="email@example.com"
+                                        autoComplete="email"
+                                        className="min-w-0 flex-1 border border-zinc-300 bg-white px-4 py-3 text-base outline-none transition placeholder:text-zinc-400 focus:border-[#1f7a3d] focus:ring-1 focus:ring-[#1f7a3d]"
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={processing}
+                                        className="btn-71 shrink-0"
+                                    >
+                                        {processing && <Spinner />}
+                                        Subscribe
+                                    </button>
+                                </div>
+                                <InputError message={errors.email} />
+                                {(wasSuccessful || status) && (
+                                    <p
+                                        role="status"
+                                        className="mt-4 text-sm font-semibold text-[#1f7a3d]"
+                                    >
+                                        {status ?? "Thanks for subscribing."}
+                                    </p>
+                                )}
+                                <p className="mt-4 text-xs text-zinc-500">
+                                    We will only send you useful club updates.
+                                    Unsubscribe whenever you like.
+                                </p>
+                            </>
+                        )}
+                    </Form>
+                </div>
+            </section>
+            {/* Newsletter section */}
         </>
     );
 }
