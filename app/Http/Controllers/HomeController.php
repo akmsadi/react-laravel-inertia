@@ -41,4 +41,33 @@ class HomeController extends Controller
     {
         return inertia('about');
     }
+
+    public function matchCenter(): Response
+    {
+        $match = Matches::with('venue')->orderByDesc('scheduled_at')->first();
+        $oldMatches = Matches::with('venue')
+            ->where(function ($query) {
+                $query
+                    ->whereIn('match_status', [
+                        'completed',
+                        'finished',
+                        'result',
+                        'archived',
+                    ])
+                    ->orWhere(function ($query) {
+                        $query
+                            ->whereNotNull('scheduled_at')
+                            ->where('scheduled_at', '<', now());
+                    });
+            })
+            ->when($match, fn ($query) => $query->where('id', '!=', $match->id))
+            ->orderByDesc('scheduled_at')
+            ->limit(12)
+            ->get();
+
+        return Inertia::render('match-center', [
+            'match' => $match,
+            'oldMatches' => $oldMatches,
+        ]);
+    }
 }

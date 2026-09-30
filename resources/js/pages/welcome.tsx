@@ -1,9 +1,10 @@
-import { Form, Head, Link, usePage } from "@inertiajs/react";
-import InputError from "@/components/input-error";
-import { Spinner } from "@/components/ui/spinner";
-import { store as newsletterStore } from "@/routes/newsletter";
-import { store } from "@/routes/player-registration";
-import { useEffect, useState } from "react";
+import { Form, Head, Link, usePage } from '@inertiajs/react';
+import InputError from '@/components/input-error';
+import { Spinner } from '@/components/ui/spinner';
+import { matchCenter } from '@/routes';
+import { store as newsletterStore } from '@/routes/newsletter';
+import { store } from '@/routes/player-registration';
+import { useEffect, useState } from 'react';
 import {
     Carousel,
     CarouselContent,
@@ -11,32 +12,32 @@ import {
     CarouselNext,
     CarouselPrevious,
     type CarouselApi,
-} from "@/components/ui/carousel";
+} from '@/components/ui/carousel';
 
 const slides = [
     {
-        key: "slide-1",
-        image: "/assets/images/slider/slider-image-4.png",
-        title: "Evergreen Team",
-        subtitle: "Passion - Performance - Teamwork",
+        key: 'slide-1',
+        image: '/assets/images/slider/slider-image-4.png',
+        title: 'Evergreen Team',
+        subtitle: 'Passion - Performance - Teamwork',
     },
     {
-        key: "slide-2",
-        image: "/assets/images/slider/slider-image-5.jpg",
-        title: "Match Day Ready",
-        subtitle: "United We Play, United We Win",
+        key: 'slide-2',
+        image: '/assets/images/slider/slider-image-5.jpg',
+        title: 'Match Day Ready',
+        subtitle: 'United We Play, United We Win',
     },
     {
-        key: "slide-3",
-        image: "/assets/images/slider/slider-image-6.jpg",
-        title: "Champions In Action",
-        subtitle: "Building A Winning Legacy",
+        key: 'slide-3',
+        image: '/assets/images/slider/slider-image-6.jpg',
+        title: 'Champions In Action',
+        subtitle: 'Building A Winning Legacy',
     },
     {
-        key: "slide-4",
-        image: "/assets/images/slider/slider-image-7.jpg",
-        title: "Champions In Action",
-        subtitle: "Building A Winning Legacy",
+        key: 'slide-4',
+        image: '/assets/images/slider/slider-image-7.jpg',
+        title: 'Champions In Action',
+        subtitle: 'Building A Winning Legacy',
     },
 ];
 
@@ -74,17 +75,17 @@ function Countdown({ scheduledAt }: { scheduledAt: string }) {
                 <div className="flex items-start gap-2 sm:gap-3" key={label}>
                     <div className="min-w-12 text-center sm:min-w-16">
                         <p className="font-display text-5xl leading-none text-[#1f7a3d] sm:text-6xl">
-                            {String(value).padStart(2, "0")}
+                            {String(value).padStart(2, '0')}
                         </p>
-                        <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-600">
-                            {label === "minutes"
-                                ? "min"
-                                : label === "seconds"
-                                  ? "sec"
+                        <p className="mt-1 text-[10px] font-bold tracking-[0.14em] text-zinc-600 uppercase">
+                            {label === 'minutes'
+                                ? 'min'
+                                : label === 'seconds'
+                                  ? 'sec'
                                   : label}
                         </p>
                     </div>
-                    {label !== "seconds" && (
+                    {label !== 'seconds' && (
                         <span className="font-display text-4xl leading-none text-[#1f7a3d] sm:text-5xl">
                             :
                         </span>
@@ -134,10 +135,10 @@ export default function Welcome({
 
         setActiveSlide(carouselApi.selectedScrollSnap());
         const onSelect = () => setActiveSlide(carouselApi.selectedScrollSnap());
-        carouselApi.on("select", onSelect);
+        carouselApi.on('select', onSelect);
 
         return () => {
-            carouselApi.off("select", onSelect);
+            carouselApi.off('select', onSelect);
         };
     }, [carouselApi]);
 
@@ -161,13 +162,13 @@ export default function Welcome({
                                 />
                                 <div className="absolute inset-0 bg-zinc-950/45" />
                                 <div className="absolute inset-x-5 bottom-14 mx-auto max-w-375 text-white sm:bottom-20 sm:px-3">
-                                    <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-lime-200">
+                                    <p className="mb-2 text-xs font-bold tracking-[0.2em] text-lime-200 uppercase">
                                         Evergreen Cricket Club
                                     </p>
-                                    <h1 className="font-display text-5xl uppercase leading-none sm:text-7xl lg:text-8xl">
+                                    <h1 className="font-display text-5xl leading-none uppercase sm:text-7xl lg:text-8xl">
                                         {slide.title}
                                     </h1>
-                                    <p className="mt-3 text-sm font-semibold uppercase tracking-[0.12em] sm:text-base">
+                                    <p className="mt-3 text-sm font-semibold tracking-[0.12em] uppercase sm:text-base">
                                         {slide.subtitle}
                                     </p>
                                 </div>
@@ -183,7 +184,7 @@ export default function Welcome({
                                 key={slide.key}
                                 aria-label={`Show ${slide.title}`}
                                 onClick={() => carouselApi?.scrollTo(index)}
-                                className={`h-1.5 w-8 transition ${index === activeSlide ? "bg-white" : "bg-white/40"}`}
+                                className={`h-1.5 w-8 transition ${index === activeSlide ? 'bg-white' : 'bg-white/40'}`}
                             />
                         ))}
                     </div>
@@ -198,10 +199,10 @@ export default function Welcome({
             >
                 <div className="grid gap-10 lg:grid-cols-[1.35fr_.95fr] lg:items-stretch">
                     <div>
-                        <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#1f7a3d]">
+                        <p className="text-sm font-bold tracking-[0.14em] text-[#1f7a3d] uppercase">
                             Cricket. Commitment. Community.
                         </p>
-                        <h2 className="mt-3 font-display text-6xl uppercase leading-[0.86] sm:text-7xl">
+                        <h2 className="mt-3 font-display text-6xl leading-[0.86] uppercase sm:text-7xl">
                             Play bold with
                             <br />
                             <span className="text-[#1f7a3d]">
@@ -221,6 +222,12 @@ export default function Welcome({
                             <a href="#gallery" className="btn-71">
                                 Events gallery
                             </a>
+                            <Link
+                                href={matchCenter()}
+                                className="btn-71 bg-[#1f7a3d]"
+                            >
+                                Match center
+                            </Link>
                         </div>
                     </div>
                     <aside className="relative flex h-full flex-col justify-center overflow-hidden border border-green-900/10 bg-white p-7 text-center shadow-[0_5px_18px_rgba(0,0,0,.08)] sm:p-10">
@@ -233,22 +240,22 @@ export default function Welcome({
                         <div className="relative">
                             {nextMatch ? (
                                 <>
-                                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#1f7a3d]">
+                                    <p className="text-xs font-bold tracking-[0.16em] text-[#1f7a3d] uppercase">
                                         Next fixture
                                     </p>
-                                    <h2 className="mt-2 font-display text-4xl uppercase leading-none sm:text-5xl">
-                                        {nextMatch.team_name}{" "}
+                                    <h2 className="mt-2 font-display text-4xl leading-none uppercase sm:text-5xl">
+                                        {nextMatch.team_name}{' '}
                                         <span className="text-[#1f7a3d]">
                                             vs
-                                        </span>{" "}
+                                        </span>{' '}
                                         {nextMatch.opponent_name}
                                     </h2>
                                     <p className="mt-5 font-semibold">
                                         {new Date(
                                             nextMatch.scheduled_at,
                                         ).toLocaleString([], {
-                                            dateStyle: "medium",
-                                            timeStyle: "short",
+                                            dateStyle: 'medium',
+                                            timeStyle: 'short',
                                         })}
                                     </p>
                                     <p className="mt-1 text-zinc-600">
@@ -260,11 +267,11 @@ export default function Welcome({
                                 </>
                             ) : lastMatch ? (
                                 <>
-                                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#1f7a3d]">
+                                    <p className="text-xs font-bold tracking-[0.16em] text-[#1f7a3d] uppercase">
                                         Latest result
                                     </p>
                                     <h2 className="mt-2 font-display text-4xl uppercase">
-                                        {lastMatch.team_name} vs{" "}
+                                        {lastMatch.team_name} vs{' '}
                                         {lastMatch.opponent_name}
                                     </h2>
                                     <p className="mt-4 font-semibold">
@@ -307,13 +314,13 @@ export default function Welcome({
                             >
                                 {team.logo ? (
                                     <img
-                                        src={"assets/images/teams/" + team.logo}
+                                        src={'assets/images/teams/' + team.logo}
                                         alt={team.name}
                                         className="aspect-square w-full object-cover transition duration-300 group-hover:scale-[1.02]"
                                     />
                                 ) : (
-                                    <div className="grid aspect-square place-items-center bg-[#e8f2eb] font-display text-3xl uppercase text-[#1f7a3d]">
-                                        {team.name.split(" ").at(-1)}
+                                    <div className="grid aspect-square place-items-center bg-[#e8f2eb] font-display text-3xl text-[#1f7a3d] uppercase">
+                                        {team.name.split(' ').at(-1)}
                                     </div>
                                 )}
                                 <h3 className="mt-4 text-center font-display text-3xl uppercase transition group-hover:text-[#1f7a3d]">
@@ -334,9 +341,9 @@ export default function Welcome({
                             title="Team members"
                             copy="Meet the individuals who make Evergreen Cricket Club stronger every day."
                         />
-                        <p className="text-sm font-bold uppercase tracking-widest text-zinc-600">
-                            Active: {playerCount}{" "}
-                            <span className="mx-1">|</span> Pending:{" "}
+                        <p className="text-sm font-bold tracking-widest text-zinc-600 uppercase">
+                            Active: {playerCount}{' '}
+                            <span className="mx-1">|</span> Pending:{' '}
                             {pendingCount}
                         </p>
                     </div>
@@ -349,12 +356,12 @@ export default function Welcome({
                                 style={{
                                     backgroundImage:
                                         "url('/assets/images/empty-male.png')",
-                                    backgroundSize: "cover",
-                                    backgroundPosition: "center",
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
                                 }}
                             >
-                                <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/85 to-transparent px-4 pb-4 pt-16 text-white">
-                                    <h3 className="mt-1 font-display text-3xl uppercase leading-none">
+                                <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/85 to-transparent px-4 pt-16 pb-4 text-white">
+                                    <h3 className="mt-1 font-display text-3xl leading-none uppercase">
                                         {player.name}
                                     </h3>
                                 </div>
@@ -393,7 +400,7 @@ export default function Welcome({
                                                         image.description ??
                                                         events[activeEvent]
                                                             ?.event_name ??
-                                                        "Event photo"
+                                                        'Event photo'
                                                     }
                                                     className="size-full object-cover transition duration-300 group-hover:scale-105"
                                                 />
@@ -412,12 +419,12 @@ export default function Welcome({
                                         type="button"
                                         key={event.id ?? index}
                                         onClick={() => setActiveEvent(index)}
-                                        className={`mb-1 w-full border-l-4 px-4 py-3 text-left transition ${activeEvent === index ? "border-[#1f7a3d] bg-[#e8f2eb]" : "border-transparent hover:bg-zinc-50"}`}
+                                        className={`mb-1 w-full border-l-4 px-4 py-3 text-left transition ${activeEvent === index ? 'border-[#1f7a3d] bg-[#e8f2eb]' : 'border-transparent hover:bg-zinc-50'}`}
                                     >
                                         <span className="font-display text-2xl uppercase">
                                             {event.event_name}
                                         </span>
-                                        <span className="mt-1 block text-xs font-bold uppercase tracking-widest text-[#1f7a3d]">
+                                        <span className="mt-1 block text-xs font-bold tracking-widest text-[#1f7a3d] uppercase">
                                             {event.images?.length ?? 0} photos
                                         </span>
                                     </button>
@@ -457,46 +464,46 @@ export default function Welcome({
                             <>
                                 {[
                                     {
-                                        id: "name",
-                                        label: "Name",
-                                        type: "text",
+                                        id: 'name',
+                                        label: 'Name',
+                                        type: 'text',
                                         required: true,
-                                        placeholder: "Full name",
-                                        autoComplete: "name",
+                                        placeholder: 'Full name',
+                                        autoComplete: 'name',
                                     },
                                     {
-                                        id: "organization",
-                                        label: "Organization",
-                                        type: "text",
-                                        placeholder: "Organization name",
+                                        id: 'organization',
+                                        label: 'Organization',
+                                        type: 'text',
+                                        placeholder: 'Organization name',
                                     },
                                     {
-                                        id: "email",
-                                        label: "Email address",
-                                        type: "email",
-                                        placeholder: "email@example.com",
-                                        autoComplete: "email",
+                                        id: 'email',
+                                        label: 'Email address',
+                                        type: 'email',
+                                        placeholder: 'email@example.com',
+                                        autoComplete: 'email',
                                     },
                                     {
-                                        id: "phone",
-                                        label: "Phone",
-                                        type: "tel",
+                                        id: 'phone',
+                                        label: 'Phone',
+                                        type: 'tel',
                                         required: true,
-                                        placeholder: "Phone number",
-                                        autoComplete: "tel",
+                                        placeholder: 'Phone number',
+                                        autoComplete: 'tel',
                                     },
                                     {
-                                        id: "address",
-                                        label: "Address",
-                                        type: "text",
+                                        id: 'address',
+                                        label: 'Address',
+                                        type: 'text',
                                         required: true,
-                                        placeholder: "Street address",
-                                        autoComplete: "street-address",
+                                        placeholder: 'Street address',
+                                        autoComplete: 'street-address',
                                     },
                                 ].map((field) => (
                                     <label
                                         key={field.id}
-                                        className="mb-5 block text-sm font-bold uppercase tracking-widest"
+                                        className="mb-5 block text-sm font-bold tracking-widest uppercase"
                                     >
                                         {field.label}
                                         <input
@@ -505,7 +512,7 @@ export default function Welcome({
                                             type={field.type}
                                             placeholder={field.placeholder}
                                             autoComplete={field.autoComplete}
-                                            className="mt-2 block w-full border border-zinc-300 bg-white px-4 py-3 text-base font-normal normal-case tracking-normal outline-none transition placeholder:text-zinc-400 focus:border-[#1f7a3d] focus:ring-1 focus:ring-[#1f7a3d]"
+                                            className="mt-2 block w-full border border-zinc-300 bg-white px-4 py-3 text-base font-normal tracking-normal normal-case transition outline-none placeholder:text-zinc-400 focus:border-[#1f7a3d] focus:ring-1 focus:ring-[#1f7a3d]"
                                         />
                                         <InputError
                                             message={errors[field.id]}
@@ -571,10 +578,10 @@ export default function Welcome({
                                                         .image_url
                                                 }
                                                 alt={product.name}
-                                                className="w-full aspect-4/3 object-cover transition"
+                                                className="aspect-4/3 w-full object-cover transition"
                                             />
                                         ) : (
-                                            <div className="w-full aspect-4/3 flex items-center justify-center text-gray-400">
+                                            <div className="flex aspect-4/3 w-full items-center justify-center text-gray-400">
                                                 No Image
                                             </div>
                                         )}
@@ -601,10 +608,10 @@ export default function Welcome({
             <section id="newsletter" className="py-16 sm:py-24">
                 <div className="mx-auto grid max-w-[1600px] gap-10 px-5 sm:px-8 lg:grid-cols-2 lg:items-center lg:gap-20">
                     <div>
-                        <p className="text-sm font-bold uppercase tracking-[0.14em]">
+                        <p className="text-sm font-bold tracking-[0.14em] uppercase">
                             Stay in the game
                         </p>
-                        <h2 className="mt-3 font-display text-5xl uppercase leading-none sm:text-6xl">
+                        <h2 className="mt-3 font-display text-5xl leading-none uppercase sm:text-6xl">
                             Join our newsletter
                         </h2>
                         <p className="mt-5 max-w-xl text-base leading-8">
@@ -627,7 +634,7 @@ export default function Welcome({
                             <>
                                 <label
                                     htmlFor="newsletter-email"
-                                    className="text-sm font-bold uppercase tracking-widest"
+                                    className="text-sm font-bold tracking-widest uppercase"
                                 >
                                     Email address
                                 </label>
@@ -639,7 +646,7 @@ export default function Welcome({
                                         required
                                         placeholder="email@example.com"
                                         autoComplete="email"
-                                        className="min-w-0 flex-1 border border-zinc-300 bg-white px-4 py-3 text-base outline-none transition placeholder:text-zinc-400 focus:border-[#1f7a3d] focus:ring-1 focus:ring-[#1f7a3d]"
+                                        className="min-w-0 flex-1 border border-zinc-300 bg-white px-4 py-3 text-base transition outline-none placeholder:text-zinc-400 focus:border-[#1f7a3d] focus:ring-1 focus:ring-[#1f7a3d]"
                                     />
                                     <button
                                         type="submit"
@@ -656,7 +663,7 @@ export default function Welcome({
                                         role="status"
                                         className="mt-4 text-sm font-semibold text-[#1f7a3d]"
                                     >
-                                        {status ?? "Thanks for subscribing."}
+                                        {status ?? 'Thanks for subscribing.'}
                                     </p>
                                 )}
                                 <p className="mt-4 text-xs text-zinc-500">
@@ -676,7 +683,7 @@ export default function Welcome({
 function SectionHeading({ title, copy }: { title: string; copy: string }) {
     return (
         <div>
-            <h2 className="font-display text-5xl uppercase leading-none sm:text-6xl">
+            <h2 className="font-display text-5xl leading-none uppercase sm:text-6xl">
                 {title}
             </h2>
             <p className="mt-3 max-w-2xl text-base leading-7 text-zinc-600">
