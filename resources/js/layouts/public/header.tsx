@@ -43,37 +43,37 @@ export default function Header() {
                         menuOpen ? "flex" : "hidden"
                     } absolute inset-x-0 top-full flex-col border-b border-zinc-200 bg-white px-5 py-4 lg:static lg:flex lg:flex-row lg:items-center lg:gap-7 lg:border-0 lg:bg-transparent lg:p-0`}
                 >
-                    <a
+                    <Link
                         href="/#teams"
                         onClick={() => setMenuOpen(false)}
                         className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                     >
                         Teams
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                         href="/#members"
                         onClick={() => setMenuOpen(false)}
                         className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                     >
                         Members
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                         href="/#gallery"
                         onClick={() => setMenuOpen(false)}
                         className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                     >
                         Gallery
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                         href="/#join"
                         onClick={() => setMenuOpen(false)}
                         className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                     >
                         Join
-                    </a>
+                    </Link>
 
                     <Link
                         href="/products"

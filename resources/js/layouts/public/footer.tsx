@@ -1,7 +1,7 @@
-import { Link } from "@inertiajs/react";
-import { ArrowUp } from "lucide-react";
-import CartController from "@/actions/App/Http/Controllers/CartController";
-import { login } from "@/routes";
+import { Link } from '@inertiajs/react';
+import { ArrowUp } from 'lucide-react';
+import CartController from '@/actions/App/Http/Controllers/CartController';
+import { about, login } from '@/routes';
 
 export default function Footer() {
     const year = new Date().getFullYear();
@@ -84,6 +84,14 @@ export default function Footer() {
                                     Cart
                                 </Link>
                             </li>
+                            <li>
+                                <Link
+                                    href={about()}
+                                    className="transition hover:text-white"
+                                >
+                                    About
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -98,7 +106,7 @@ export default function Footer() {
                             href={login()}
                             className="transition hover:text-white"
                         >
-                            Admin login
+                            Admin
                         </Link>
                     </div>
                 </div>
@@ -107,7 +115,7 @@ export default function Footer() {
             <a
                 href="#home"
                 aria-label="Back to top"
-                className="fixed bottom-5 right-5 z-20 grid size-11 place-items-center bg-[#1f7a3d] text-white shadow-lg transition hover:bg-green-900"
+                className="fixed right-5 bottom-5 z-20 grid size-11 place-items-center bg-[#1f7a3d] text-white shadow-lg transition hover:bg-green-900"
             >
                 <ArrowUp size={21} />
             </a>

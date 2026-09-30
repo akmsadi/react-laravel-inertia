@@ -16,7 +16,7 @@ class HomeController extends Controller
     {
         $lastMatch = Matches::orderBy('scheduled_at', 'desc')->with('venue')->limit(1)->first();
         $nextMatch = Matches::where('scheduled_at', '>', date('Y-m-d H:i:s'))->where('match_status', '!=', 'archived')->orderBy('scheduled_at', 'asc')->with('venue')->limit(1)->first();
-        $players = Player::where('status', 'approved')->limit(10)->inRandomOrder()->get();
+        $players = Player::where('status', 'approved')->limit(5)->inRandomOrder()->get();
         $events = Events::with('images')->latest()->orderBy('id', 'desc')->limit(5)->get();
         $teams = Team::orderBy('name', 'asc')->get();
         $products = Product::with('category', 'primaryImage')
