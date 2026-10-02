@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Table('matches')]
@@ -14,5 +15,15 @@ class Matches extends Model
     public function venue(): HasOne
     {
         return $this->hasOne(Venue::class, 'id', 'venue_id');
+    }
+
+    public function summaryBatsmen(): HasMany
+    {
+        return $this->hasMany(MatchSummaryBatsman::class, 'match_id')->orderBy('sort_order');
+    }
+
+    public function summaryBowlers(): HasMany
+    {
+        return $this->hasMany(MatchSummaryBowler::class, 'match_id')->orderBy('sort_order');
     }
 }
