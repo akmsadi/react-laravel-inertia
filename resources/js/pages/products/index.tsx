@@ -1,4 +1,4 @@
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 
 type Product = {
     id: number;
@@ -16,14 +16,59 @@ type PaginationLink = {
     active: boolean;
 };
 
+type Filters = {
+    category: string | number;
+    attributes: Record<string, string | number>;
+};
+
 type PageProps = {
+    categories: { id: number; name: string }[];
+    attributes: {
+        id: number;
+        name: string;
+        values: { id: number; value: string }[];
+    }[];
+    filters: Filters;
     products: {
         data: Product[];
         links: PaginationLink[];
     };
 };
 
-export default function ProductsIndex({ products }: PageProps) {
+export default function ProductsIndex({
+    products,
+    categories,
+    attributes,
+    filters,
+}: PageProps) {
+    const selectedAttributes = filters.attributes ?? {};
+    const hasFilters =
+        Boolean(filters.category) || Object.keys(selectedAttributes).length > 0;
+
+    const applyFilters = (category: string, attrs: Record<string, string>) => {
+        const cleaned = Object.fromEntries(
+            Object.entries(attrs).filter(([, value]) => value !== ""),
+        );
+
+        router.get(
+            "/products",
+            {
+                ...(category ? { category } : {}),
+                ...(Object.keys(cleaned).length ? { attributes: cleaned } : {}),
+            },
+            { preserveState: true, preserveScroll: true },
+        );
+    };
+
+    const currentAttributes = Object.fromEntries(
+        Object.entries(selectedAttributes).map(([key, value]) => [
+            key,
+            String(value),
+        ]),
+    );
+    const selectClass =
+        "rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700";
+
     return (
         <div className="min-h-screen bg-gray-50">
             <div className="mx-auto max-w-[1600px] px-4 py-12">
@@ -35,6 +80,61 @@ export default function ProductsIndex({ products }: PageProps) {
                         Browse our collection of products
                     </p>
                 </div>
+
+                <div className="mb-8 flex flex-wrap items-center gap-3 rounded-lg bg-white p-4 shadow">
+                    <select
+                        aria-label="Category"
+                        className={selectClass}
+                        value={String(filters.category ?? "")}
+                        onChange={(event) =>
+                            applyFilters(event.target.value, currentAttributes)
+                        }
+                    >
+                        <option value="">All categories</option>
+                        {categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
+
+                    {attributes.map((attribute) => (
+                        <select
+                            key={attribute.id}
+                            aria-label={attribute.name}
+                            className={selectClass}
+                            value={currentAttributes[attribute.id] ?? ""}
+                            onChange={(event) =>
+                                applyFilters(String(filters.category ?? ""), {
+                                    ...currentAttributes,
+                                    [attribute.id]: event.target.value,
+                                })
+                            }
+                        >
+                            <option value="">All {attribute.name}</option>
+                            {attribute.values.map((value) => (
+                                <option key={value.id} value={value.id}>
+                                    {value.value}
+                                </option>
+                            ))}
+                        </select>
+                    ))}
+
+                    {hasFilters && (
+                        <Link
+                            href="/products"
+                            className="text-sm font-semibold text-red-600"
+                        >
+                            Clear filters
+                        </Link>
+                    )}
+                </div>
+
+                {products.data.length === 0 && (
+                    <p className="py-12 text-center text-gray-500">
+                        No products match these filters.
+                    </p>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {products.data.map((product) => (
