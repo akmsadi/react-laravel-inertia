@@ -4,96 +4,19 @@ import { Spinner } from "@/components/ui/spinner";
 import { matchCenter } from "@/routes";
 import { store as newsletterStore } from "@/routes/newsletter";
 import { store } from "@/routes/player-registration";
-import { useEffect, useState } from "react";
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-    type CarouselApi,
-} from "@/components/ui/carousel";
-
-const slides = [
-    {
-        key: "slide-1",
-        image: "/assets/images/slider/slider-image-4.png",
-        title: "Evergreen Team",
-        subtitle: "Passion - Performance - Teamwork",
-    },
-    {
-        key: "slide-2",
-        image: "/assets/images/slider/slider-image-5.jpg",
-        title: "Match Day Ready",
-        subtitle: "United We Play, United We Win",
-    },
-    {
-        key: "slide-3",
-        image: "/assets/images/slider/slider-image-6.jpg",
-        title: "Champions In Action",
-        subtitle: "Building A Winning Legacy",
-    },
-    {
-        key: "slide-4",
-        image: "/assets/images/slider/slider-image-7.jpg",
-        title: "Champions In Action",
-        subtitle: "Building A Winning Legacy",
-    },
-];
+import { useState } from "react";
+import Lightbox from "yet-another-react-lightbox";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
+import Countdown from "@/layouts/public/countdown";
+import SectionHeading from "@/layouts/public/section-heading";
+import Slider from "@/layouts/public/slider";
 
 function imageSource(image: { image_path?: string; src?: string }) {
     return image.src ?? `/${image.image_path}`;
-}
-
-function getTimeRemaining(targetDate: string) {
-    const difference = Math.max(0, new Date(targetDate).getTime() - Date.now());
-
-    return {
-        days: Math.floor(difference / 86400000),
-        hours: Math.floor((difference / 3600000) % 24),
-        minutes: Math.floor((difference / 60000) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-    };
-}
-
-function Countdown({ scheduledAt }: { scheduledAt: string }) {
-    const [remaining, setRemaining] = useState(() =>
-        getTimeRemaining(scheduledAt),
-    );
-
-    useEffect(() => {
-        const timer = window.setInterval(
-            () => setRemaining(getTimeRemaining(scheduledAt)),
-            1000,
-        );
-        return () => window.clearInterval(timer);
-    }, [scheduledAt]);
-
-    return (
-        <div className="mt-7 flex flex-wrap justify-center gap-2 sm:gap-3">
-            {Object.entries(remaining).map(([label, value]) => (
-                <div className="flex items-start gap-2 sm:gap-3" key={label}>
-                    <div className="min-w-12 text-center sm:min-w-16">
-                        <p className="font-display text-5xl leading-none text-[#1f7a3d] sm:text-6xl">
-                            {String(value).padStart(2, "0")}
-                        </p>
-                        <p className="mt-1 text-[10px] font-bold tracking-[0.14em] text-zinc-600 uppercase">
-                            {label === "minutes"
-                                ? "min"
-                                : label === "seconds"
-                                  ? "sec"
-                                  : label}
-                        </p>
-                    </div>
-                    {label !== "seconds" && (
-                        <span className="font-display text-4xl leading-none text-[#1f7a3d] sm:text-5xl">
-                            :
-                        </span>
-                    )}
-                </div>
-            ))}
-        </div>
-    );
 }
 
 interface WelcomeProps {
@@ -104,7 +27,6 @@ interface WelcomeProps {
     teams: any[];
     playerCount: number;
     pendingCount: number;
-    products: any[];
 }
 
 export default function Welcome({
@@ -115,82 +37,20 @@ export default function Welcome({
     teams,
     playerCount,
     pendingCount,
-    products,
 }: WelcomeProps) {
     const { flash } = usePage().props;
     const status = (flash as { status?: string } | undefined)?.status;
 
-    const [carouselApi, setCarouselApi] = useState<CarouselApi>();
-    const [activeSlide, setActiveSlide] = useState(0);
     const [activeEvent, setActiveEvent] = useState(0);
-
-    console.log(products);
+    const [lightboxIndex, setLightboxIndex] = useState(-1);
 
     const activeImages = events[activeEvent]?.images ?? [];
-
-    useEffect(() => {
-        if (!carouselApi) {
-            return;
-        }
-
-        setActiveSlide(carouselApi.selectedScrollSnap());
-        const onSelect = () => setActiveSlide(carouselApi.selectedScrollSnap());
-        carouselApi.on("select", onSelect);
-
-        return () => {
-            carouselApi.off("select", onSelect);
-        };
-    }, [carouselApi]);
 
     return (
         <>
             <Head title="Welcome" />
 
-            {/* Slider section */}
-            <section id="slider" className="relative overflow-hidden">
-                <Carousel setApi={setCarouselApi} opts={{ loop: true }}>
-                    <CarouselContent className="ml-0">
-                        {slides.map((slide) => (
-                            <CarouselItem
-                                key={slide.key}
-                                className="relative h-105 pl-0 sm:h-135 lg:h-150"
-                            >
-                                <img
-                                    src={slide.image}
-                                    alt="Evergreen cricket team"
-                                    className="absolute inset-0 size-full object-cover"
-                                />
-                                <div className="absolute inset-0 bg-zinc-950/45" />
-                                <div className="absolute inset-x-5 bottom-14 mx-auto max-w-375 text-white sm:bottom-20 sm:px-3">
-                                    <p className="mb-2 text-xs font-bold tracking-[0.2em] text-lime-200 uppercase">
-                                        Evergreen Cricket Club
-                                    </p>
-                                    <h1 className="font-display text-5xl leading-none uppercase sm:text-7xl lg:text-8xl">
-                                        {slide.title}
-                                    </h1>
-                                    <p className="mt-3 text-sm font-semibold tracking-[0.12em] uppercase sm:text-base">
-                                        {slide.subtitle}
-                                    </p>
-                                </div>
-                            </CarouselItem>
-                        ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="left-4 size-11 rounded-none border-white/50 bg-black/20 text-white hover:bg-[#1f7a3d] sm:left-8" />
-                    <CarouselNext className="right-4 size-11 rounded-none border-white/50 bg-black/20 text-white hover:bg-[#1f7a3d] sm:right-8" />
-                    <div className="absolute inset-x-0 bottom-5 z-10 flex justify-center gap-2">
-                        {slides.map((slide, index) => (
-                            <button
-                                type="button"
-                                key={slide.key}
-                                aria-label={`Show ${slide.title}`}
-                                onClick={() => carouselApi?.scrollTo(index)}
-                                className={`h-1.5 w-8 transition ${index === activeSlide ? "bg-white" : "bg-white/40"}`}
-                            />
-                        ))}
-                    </div>
-                </Carousel>
-            </section>
-            {/* Slider section */}
+            <Slider />
 
             {/* Hero section */}
             <section
@@ -395,6 +255,10 @@ export default function Welcome({
                                                     index
                                                 }
                                                 href={imageSource(image)}
+                                                onClick={(event) => {
+                                                    event.preventDefault();
+                                                    setLightboxIndex(index);
+                                                }}
                                                 className="group aspect-4/3 overflow-hidden bg-zinc-100"
                                             >
                                                 <img
@@ -440,6 +304,16 @@ export default function Welcome({
                         </p>
                     )}
                 </div>
+                <Lightbox
+                    open={lightboxIndex >= 0}
+                    index={lightboxIndex}
+                    close={() => setLightboxIndex(-1)}
+                    plugins={[Fullscreen, Zoom, Thumbnails]}
+                    slides={activeImages.map((image: any) => ({
+                        src: imageSource(image),
+                        alt: image.description ?? "Event photo",
+                    }))}
+                />
             </section>
             {/* Gallery section */}
 
@@ -556,59 +430,8 @@ export default function Welcome({
             </section>
             {/* Join section */}
 
-            {/* Products section */}
-            <section id="products" className="bg-white py-16 sm:py-24">
-                <div className="mx-auto max-w-[1600px] px-5 sm:px-8">
-                    <SectionHeading
-                        title="Recent Products"
-                        copy="Check out our latest products available for purchase."
-                    />
-                    <Carousel className="mt-10">
-                        <CarouselContent>
-                            {products.map((product) => (
-                                <CarouselItem
-                                    key={product.id}
-                                    className="md:basis-1/2 lg:basis-1/3"
-                                >
-                                    <Link
-                                        className="overflow-hidden rounded-lg border"
-                                        href={`/products/${product.id}`}
-                                    >
-                                        {product.primary_image ? (
-                                            <img
-                                                src={
-                                                    product.primary_image
-                                                        .image_url
-                                                }
-                                                alt={product.name}
-                                                className="aspect-4/3 w-full object-cover transition"
-                                            />
-                                        ) : (
-                                            <div className="flex aspect-4/3 w-full items-center justify-center text-gray-400">
-                                                No Image
-                                            </div>
-                                        )}
-
-                                        <div className="p-4">
-                                            <h3 className="text-lg font-medium">
-                                                {product.name}
-                                            </h3>
-
-                                            <p className="mt-2 text-sm text-gray-600">
-                                                {product.short_description}
-                                            </p>
-                                        </div>
-                                    </Link>
-                                </CarouselItem>
-                            ))}
-                        </CarouselContent>
-                    </Carousel>
-                </div>
-            </section>
-            {/* Products section */}
-
             {/* Newsletter section */}
-            <section id="newsletter" className="py-16 sm:py-24">
+            <section id="newsletter" className="bg-white py-16 sm:py-24">
                 <div className="mx-auto grid max-w-[1600px] gap-10 px-5 sm:px-8 lg:grid-cols-2 lg:items-center lg:gap-20">
                     <div>
                         <p className="text-sm font-bold tracking-[0.14em] uppercase">
@@ -680,18 +503,5 @@ export default function Welcome({
             </section>
             {/* Newsletter section */}
         </>
-    );
-}
-
-function SectionHeading({ title, copy }: { title: string; copy: string }) {
-    return (
-        <div>
-            <h2 className="font-display text-5xl leading-none uppercase sm:text-6xl">
-                {title}
-            </h2>
-            <p className="mt-3 max-w-2xl text-base leading-7 text-zinc-600">
-                {copy}
-            </p>
-        </div>
     );
 }

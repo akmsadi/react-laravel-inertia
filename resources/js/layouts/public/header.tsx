@@ -1,6 +1,7 @@
 import { Link, usePage } from "@inertiajs/react";
 import { Menu, ShoppingCart, X } from "lucide-react";
 import { useState } from "react";
+import type { MouseEvent } from "react";
 import CartController from "@/actions/App/Http/Controllers/CartController";
 import AuthenticatedCustomerSessionController from "@/actions/App/Http/Controllers/Customer/AuthenticatedCustomerSessionController";
 import {
@@ -10,11 +11,25 @@ import {
 
 export default function Header() {
     const { auth, cartItemCount } = usePage().props;
+    const { url } = usePage();
+    const isHome = url.split(/[?#]/)[0] === "/";
     const [menuOpen, setMenuOpen] = useState(false);
     const itemCount = typeof cartItemCount === "number" ? cartItemCount : 0;
 
+    const handleSectionClick = (event: MouseEvent<Element>, id: string) => {
+        setMenuOpen(false);
+
+        const section = document.getElementById(id);
+
+        if (isHome && section) {
+            event.preventDefault();
+            section.scrollIntoView({ behavior: "smooth" });
+            window.history.replaceState(null, "", `/#${id}`);
+        }
+    };
+
     return (
-        <header className="sticky top-0 z-30 bg-white/95 backdrop-blur">
+        <header className="sticky top-0 z-30 bg-white/95 backdrop-blur shadow">
             <nav className="mx-auto flex max-w-[1600px] items-center justify-between px-5 py-3 sm:px-8">
                 <Link
                     href="/"
@@ -45,7 +60,7 @@ export default function Header() {
                 >
                     <Link
                         href="/#teams"
-                        onClick={() => setMenuOpen(false)}
+                        onClick={(event) => handleSectionClick(event, "teams")}
                         className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                     >
                         Teams
@@ -53,7 +68,9 @@ export default function Header() {
 
                     <Link
                         href="/#members"
-                        onClick={() => setMenuOpen(false)}
+                        onClick={(event) =>
+                            handleSectionClick(event, "members")
+                        }
                         className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                     >
                         Members
@@ -61,7 +78,9 @@ export default function Header() {
 
                     <Link
                         href="/#gallery"
-                        onClick={() => setMenuOpen(false)}
+                        onClick={(event) =>
+                            handleSectionClick(event, "gallery")
+                        }
                         className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                     >
                         Gallery
@@ -69,7 +88,7 @@ export default function Header() {
 
                     <Link
                         href="/#join"
-                        onClick={() => setMenuOpen(false)}
+                        onClick={(event) => handleSectionClick(event, "join")}
                         className="px-3 py-2 text-center text-sm tracking-widest uppercase transition hover:bg-[#1f7a3d] hover:text-white"
                     >
                         Join
