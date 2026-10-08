@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Form, Link } from '@inertiajs/react';
-import { ChevronLeft } from 'lucide-react';
-import CartController from '@/actions/App/Http/Controllers/CartController';
+import React, { useState } from "react";
+import { Form, Link } from "@inertiajs/react";
+import { ChevronLeft } from "lucide-react";
+import CartController from "@/actions/App/Http/Controllers/CartController";
 
 type ProductImage = {
     id: number;
@@ -53,7 +53,7 @@ export default function ProductShow({ product }: PageProps) {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <div className="mx-auto max-w-7xl px-4 py-8">
+            <div className="mx-auto max-w-[1600px] px-4 py-8">
                 <Link
                     href="/products"
                     className="mb-8 flex items-center text-blue-600 hover:text-blue-800"
@@ -86,8 +86,8 @@ export default function ProductShow({ product }: PageProps) {
                                         onClick={() => setSelectedImage(image)}
                                         className={`h-20 w-20 overflow-hidden rounded border-2 ${
                                             selectedImage?.id === image.id
-                                                ? 'border-blue-600'
-                                                : 'border-gray-200 hover:border-gray-400'
+                                                ? "border-blue-600"
+                                                : "border-gray-200 hover:border-gray-400"
                                         }`}
                                     >
                                         <img
@@ -174,8 +174,8 @@ export default function ProductShow({ product }: PageProps) {
                                             className={`w-full rounded-lg border-2 p-3 text-left transition disabled:cursor-not-allowed disabled:opacity-50 ${
                                                 selectedVariant?.id ===
                                                 variant.id
-                                                    ? 'border-blue-600 bg-blue-50'
-                                                    : 'border-gray-200 hover:border-gray-400'
+                                                    ? "border-blue-600 bg-blue-50"
+                                                    : "border-gray-200 hover:border-gray-400"
                                             }`}
                                         >
                                             <p className="font-medium text-gray-900">
@@ -210,7 +210,7 @@ export default function ProductShow({ product }: PageProps) {
                                     <input
                                         type="hidden"
                                         name="variant_id"
-                                        value={selectedVariant?.id ?? ''}
+                                        value={selectedVariant?.id ?? ""}
                                         readOnly
                                     />
                                     {errors.variant_id && (
@@ -233,18 +233,18 @@ export default function ProductShow({ product }: PageProps) {
                                         type="submit"
                                         className={`w-full rounded-lg px-6 py-3 font-semibold text-white transition ${
                                             canAddToCart
-                                                ? 'bg-blue-600 hover:bg-blue-700'
-                                                : 'cursor-not-allowed bg-gray-400'
+                                                ? "bg-blue-600 hover:bg-blue-700"
+                                                : "cursor-not-allowed bg-gray-400"
                                         }`}
                                         disabled={!canAddToCart || processing}
                                     >
                                         {processing
-                                            ? 'Adding...'
+                                            ? "Adding..."
                                             : canAddToCart
-                                              ? 'Add to Cart'
+                                              ? "Add to Cart"
                                               : hasVariants && !selectedVariant
-                                                ? 'Select a Variant'
-                                                : 'Out of Stock'}
+                                                ? "Select a Variant"
+                                                : "Out of Stock"}
                                     </button>
                                     {recentlySuccessful && (
                                         <p

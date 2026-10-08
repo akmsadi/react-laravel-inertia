@@ -17,6 +17,7 @@ void createInertiaApp({
             case name === 'about':
             case name === 'match-center':
             case name === 'teams/show':
+            case name === 'players/show':
             case name.startsWith('products/'):
             case name.startsWith('cart/'):
             case name.startsWith('checkout/'):

@@ -15,6 +15,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/match-center/{match?}', [HomeController::class, 'matchCenter'])->name('match-center');
 Route::get('/teams/{team}', [TeamController::class, 'show'])->name('teams.show');
+Route::get('/players/{player}', [PlayerController::class, 'show'])->name('players.show');
 Route::post('player-registration', [PlayerController::class, 'store'])->name('player-registration.store');
 Route::post('newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
 
