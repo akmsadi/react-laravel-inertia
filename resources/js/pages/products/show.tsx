@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Form, Link } from "@inertiajs/react";
 import { ChevronLeft } from "lucide-react";
 import CartController from "@/actions/App/Http/Controllers/CartController";
+import type { Category } from "@/types";
 
 type ProductImage = {
     id: number;
@@ -20,7 +21,7 @@ type ProductVariant = {
 type Product = {
     id: number;
     name: string;
-    category: { name: string };
+    category: Pick<Category, "name">;
     images: ProductImage[];
     variants: ProductVariant[];
     base_price: string;

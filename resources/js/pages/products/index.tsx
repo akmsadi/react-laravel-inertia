@@ -1,10 +1,11 @@
 import { Link, router } from "@inertiajs/react";
+import type { Category } from "@/types";
 
 type Product = {
     id: number;
     name: string;
     images: { image_url: string }[];
-    category: { name: string };
+    category: Pick<Category, "name">;
     base_price: string;
     stock_quantity: number;
     variants: { id: number }[];
@@ -22,7 +23,7 @@ type Filters = {
 };
 
 type PageProps = {
-    categories: { id: number; name: string }[];
+    categories: Pick<Category, "id" | "name">[];
     attributes: {
         id: number;
         name: string;
