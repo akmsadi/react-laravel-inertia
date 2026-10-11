@@ -1,5 +1,6 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {
+    Boxes,
     FolderGit2,
     LayoutGrid,
     Package,
@@ -29,6 +30,7 @@ import attributes from '@/routes/attributes';
 import categories from '@/routes/categories';
 import coupons from '@/routes/coupons';
 import adminCustomers from '@/routes/admin/customers';
+import inventory from '@/routes/admin/inventory';
 import adminOrders from '@/routes/admin/orders';
 import adminProducts from '@/routes/admin/products';
 
@@ -50,6 +52,7 @@ const mainNavItems: NavItem[] = [
                 href: attributes.index(),
                 icon: SlidersHorizontal,
             },
+            { title: 'Inventory', href: inventory.index(), icon: Boxes },
             { title: 'Orders', href: adminOrders.index(), icon: ShoppingCart },
             { title: 'Customers', href: adminCustomers.index(), icon: Users },
             { title: 'Coupons', href: coupons.index(), icon: TicketPercent },
@@ -66,6 +69,11 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { auth } = usePage().props;
+    const navItems = auth.user?.is_admin
+        ? mainNavItems
+        : mainNavItems.filter((item) => item.title === 'Dashboard');
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -81,7 +89,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={navItems} />
             </SidebarContent>
 
             <SidebarFooter>

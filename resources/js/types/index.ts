@@ -6,3 +6,4 @@ export type * from './order';
 export type * from './product';
 export type * from './product-attribute';
 export type * from './ui';
+export type * from './inventory';
