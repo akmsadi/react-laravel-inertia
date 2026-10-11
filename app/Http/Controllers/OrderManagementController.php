@@ -5,14 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
 use App\Models\Product;
+use App\Services\InventoryService;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class OrderManagementController extends Controller
 {
+    public function __construct(private InventoryService $inventory) {}
+
     public function index(Request $request): Response
     {
         $status = $request->string('status')->toString();
@@ -63,7 +67,18 @@ class OrderManagementController extends Controller
 
     public function update(UpdateOrderRequest $request, Order $order): RedirectResponse
     {
-        $order->update($request->validated());
+        DB::transaction(function () use ($request, $order): void {
+            $wasCancelled = $order->status === 'cancelled';
+            $willBeCancelled = $request->validated('status') === 'cancelled';
+
+            if (! $wasCancelled && $willBeCancelled) {
+                $this->inventory->releaseOrder($order, $request->user()->id);
+            } elseif ($wasCancelled && ! $willBeCancelled) {
+                $this->inventory->reserveOrder($order, $request->user()->id);
+            }
+
+            $order->update($request->validated());
+        });
 
         return back();
     }

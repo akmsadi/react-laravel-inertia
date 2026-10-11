@@ -8,11 +8,19 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Services\CouponService;
+use App\Services\InventoryService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OrderItemController extends Controller
 {
+    public function __construct(
+        private InventoryService $inventory,
+        private CouponService $coupons,
+    ) {}
+
     public function store(StoreOrderItemRequest $request, Order $order): RedirectResponse
     {
         $product = Product::findOrFail($request->integer('product_id'));
@@ -25,7 +33,12 @@ class OrderItemController extends Controller
             : (float) ($variant?->price ?? $product->base_price);
         $quantity = $request->integer('quantity');
 
-        DB::transaction(function () use ($order, $product, $variant, $unitPrice, $quantity): void {
+        DB::transaction(function () use ($request, $order, $product, $variant, $unitPrice, $quantity): void {
+            if ($this->isStockCommitted($order)) {
+                $this->inventory->assertAvailable($product, $variant, $quantity);
+                $this->inventory->reserveForOrder($order, $product, $variant, $quantity, $request->user()->id);
+            }
+
             $order->items()->create([
                 'product_id' => $product->id,
                 'variant_id' => $variant?->id,
@@ -46,6 +59,17 @@ class OrderItemController extends Controller
     public function update(UpdateOrderItemRequest $request, Order $order, OrderItem $item): RedirectResponse
     {
         DB::transaction(function () use ($request, $order, $item): void {
+            $delta = $request->integer('quantity') - $item->quantity;
+
+            if ($this->isStockCommitted($order) && $delta !== 0 && $item->product !== null) {
+                if ($delta > 0) {
+                    $this->inventory->assertAvailable($item->product, $item->variant, $delta);
+                    $this->inventory->reserveForOrder($order, $item->product, $item->variant, $delta, $request->user()->id);
+                } else {
+                    $this->inventory->releaseForOrder($order, $item->product, $item->variant, -$delta, $request->user()->id);
+                }
+            }
+
             $item->update([
                 'quantity' => $request->integer('quantity'),
                 'unit_price' => $request->input('unit_price'),
@@ -58,9 +82,13 @@ class OrderItemController extends Controller
         return back();
     }
 
-    public function destroy(Order $order, OrderItem $item): RedirectResponse
+    public function destroy(Request $request, Order $order, OrderItem $item): RedirectResponse
     {
-        DB::transaction(function () use ($order, $item): void {
+        DB::transaction(function () use ($request, $order, $item): void {
+            if ($this->isStockCommitted($order) && $item->product !== null) {
+                $this->inventory->releaseForOrder($order, $item->product, $item->variant, $item->quantity, $request->user()->id);
+            }
+
             $item->delete();
 
             $this->recalculate($order);
@@ -69,16 +97,13 @@ class OrderItemController extends Controller
         return back();
     }
 
+    private function isStockCommitted(Order $order): bool
+    {
+        return $order->status !== 'cancelled';
+    }
+
     private function recalculate(Order $order): void
     {
-        $subtotal = round((float) $order->items()->sum('total_price'), 2);
-
-        $order->update([
-            'subtotal' => $subtotal,
-            'total_amount' => round(
-                $subtotal + (float) $order->tax_amount + (float) $order->shipping_amount - (float) $order->discount_amount,
-                2,
-            ),
-        ]);
+        $this->coupons->syncDiscount($order);
     }
 }
