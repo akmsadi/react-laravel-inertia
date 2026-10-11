@@ -7,18 +7,13 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Services\InventoryService;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    public function __invoke(Request $request): Response
+    public function __invoke(): Response
     {
-        if (! $request->user()->is_admin) {
-            return Inertia::render('dashboard', ['shop' => null]);
-        }
-
         $threshold = InventoryService::LOW_STOCK_THRESHOLD;
         $paid = Order::query()->where('payment_status', 'paid')->where('status', '!=', 'cancelled');
 

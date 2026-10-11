@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import {
     Boxes,
     FolderGit2,
@@ -69,11 +69,6 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
-    const { auth } = usePage().props;
-    const navItems = auth.user?.is_admin
-        ? mainNavItems
-        : mainNavItems.filter((item) => item.title === 'Dashboard');
-
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -89,7 +84,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={navItems} />
+                <NavMain items={mainNavItems} />
             </SidebarContent>
 
             <SidebarFooter>

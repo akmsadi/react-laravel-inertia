@@ -28,19 +28,10 @@ type Props = {
             sku: string | null;
             stock_quantity: number;
         }[];
-    } | null;
+    };
 };
 
 export default function Dashboard({ shop }: Props) {
-    if (shop === null) {
-        return (
-            <>
-                <Head title="Dashboard" />
-                <div className="p-4 text-muted-foreground">Welcome back.</div>
-            </>
-        );
-    }
-
     const { stats } = shop;
     const cards = [
         { label: 'Paid revenue', value: stats.revenue },

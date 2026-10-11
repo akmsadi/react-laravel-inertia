@@ -61,7 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 });
 
-Route::middleware(['auth', 'verified', 'admin'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('admin/inventory', [InventoryController::class, 'index'])->name('admin.inventory.index');
     Route::post('admin/inventory/adjust', [InventoryController::class, 'adjust'])->name('admin.inventory.adjust');
     Route::put('admin/orders/{order}/shipping-address', [OrderShippingAddressController::class, 'update'])

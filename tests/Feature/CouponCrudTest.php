@@ -22,7 +22,7 @@ test('guests cannot access coupons', function () {
 test('index lists and searches coupons', function () {
     Coupon::factory()->create(['code' => 'FINDME']);
     Coupon::factory()->count(2)->create();
-    $user = User::factory()->admin()->create();
+    $user = User::factory()->create();
 
     $this->actingAs($user)->get(route('coupons.index'))
         ->assertInertia(fn (Assert $page) => $page->component('admin/coupons/index')->has('coupons.data', 3));
@@ -32,7 +32,7 @@ test('index lists and searches coupons', function () {
 
 test('create and edit pages render', function () {
     $coupon = Coupon::factory()->create();
-    $user = User::factory()->admin()->create();
+    $user = User::factory()->create();
 
     $this->actingAs($user)->get(route('coupons.create'))
         ->assertInertia(fn (Assert $page) => $page->component('admin/coupons/create'));
@@ -41,7 +41,7 @@ test('create and edit pages render', function () {
 });
 
 test('coupon can be created with an uppercased code', function () {
-    $this->actingAs(User::factory()->admin()->create())
+    $this->actingAs(User::factory()->create())
         ->post(route('coupons.store'), validCouponData(['expires_at' => now()->addWeek()->toDateTimeString()]))
         ->assertRedirect(route('coupons.index'));
 
@@ -50,7 +50,7 @@ test('coupon can be created with an uppercased code', function () {
 
 test('store validates required fields, unique code, percentage cap and date order', function () {
     Coupon::factory()->create(['code' => 'TAKEN']);
-    $user = User::factory()->admin()->create();
+    $user = User::factory()->create();
 
     $this->actingAs($user)->post(route('coupons.store'), [])
         ->assertSessionHasErrors(['code', 'discount_type', 'discount_value', 'is_active']);
@@ -69,7 +69,7 @@ test('store validates required fields, unique code, percentage cap and date orde
 test('coupon can be updated keeping its own code', function () {
     $coupon = Coupon::factory()->create(['code' => 'KEEP']);
 
-    $this->actingAs(User::factory()->admin()->create())
+    $this->actingAs(User::factory()->create())
         ->put(route('coupons.update', $coupon), validCouponData(['code' => 'KEEP', 'is_active' => '0']))
         ->assertRedirect(route('coupons.index'));
 
@@ -77,7 +77,7 @@ test('coupon can be updated keeping its own code', function () {
 });
 
 test('unused coupon can be deleted but a used one cannot', function () {
-    $user = User::factory()->admin()->create();
+    $user = User::factory()->create();
     $free = Coupon::factory()->create();
     $used = Coupon::factory()->create();
     $used->orders()->attach(Order::factory()->create(), ['discount_amount' => 5]);

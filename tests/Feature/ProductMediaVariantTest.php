@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->admin()->create());
+    $this->actingAs(User::factory()->create());
 });
 
 test('edit page includes images, variants with attributes and attribute options', function () {

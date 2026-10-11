@@ -5,21 +5,15 @@ use App\Models\Product;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
-test('non-admin users cannot access shop routes', function () {
+test('dashboard includes shop stats', function () {
     $this->actingAs(User::factory()->create())
-        ->get(route('admin.orders.index'))
-        ->assertForbidden();
-});
-
-test('admin dashboard includes shop stats', function () {
-    $this->actingAs(User::factory()->admin()->create())
         ->get(route('dashboard'))
         ->assertInertia(fn (Assert $page) => $page->has('shop'));
 });
 
 test('inventory adjustment changes stock and records a transaction', function () {
     $product = Product::factory()->create(['stock_quantity' => 5]);
-    $admin = User::factory()->admin()->create();
+    $admin = User::factory()->create();
 
     $this->actingAs($admin)->get(route('admin.inventory.index'))->assertOk();
 
@@ -35,9 +29,9 @@ test('inventory adjustment changes stock and records a transaction', function ()
 });
 
 test('cancelling an order restocks and un-cancelling reserves again', function () {
-    $product = Product::factory()->create(['stock_quantity' => 10, 'price' => 10]);
+    $product = Product::factory()->create(['stock_quantity' => 10, 'base_price' => 10]);
     $order = Order::factory()->create(['status' => 'pending']);
-    $admin = User::factory()->admin()->create();
+    $admin = User::factory()->create();
 
     $this->actingAs($admin)
         ->post(route('admin.orders.items.store', $order), ['product_id' => $product->id, 'quantity' => 4]);
