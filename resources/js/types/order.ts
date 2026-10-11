@@ -61,3 +61,12 @@ export type OrderProductOption = {
         price: string | null;
     }[];
 };
+
+export type AdminCustomer = {
+    id: number;
+    name: string;
+    email: string;
+    phone: string | null;
+    created_at: string;
+    orders_count?: number;
+};

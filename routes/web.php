@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Customer\AuthenticatedCustomerSessionController;
 use App\Http\Controllers\Customer\RegisteredCustomerController;
+use App\Http\Controllers\CustomerManagementController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\OrderItemController;
@@ -54,6 +55,9 @@ Route::middleware('auth:customer')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
     Route::resource('categories', CategoryController::class);
+    Route::resource('admin/customers', CustomerManagementController::class)
+        ->parameters(['customers' => 'customer'])
+        ->names('admin.customers');
     Route::resource('admin/orders', OrderManagementController::class)
         ->only(['index', 'show', 'update'])
         ->names('admin.orders');
