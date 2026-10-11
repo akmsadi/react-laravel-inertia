@@ -1,9 +1,15 @@
-import { Link } from "@inertiajs/react";
-import { BookOpen, FolderGit2, LayoutGrid, Tag } from "lucide-react";
-import AppLogo from "@/components/app-logo";
-import { NavFooter } from "@/components/nav-footer";
-import { NavMain } from "@/components/nav-main";
-import { NavUser } from "@/components/nav-user";
+import { Link } from '@inertiajs/react';
+import {
+    FolderGit2,
+    LayoutGrid,
+    Package,
+    SlidersHorizontal,
+    Tag,
+} from 'lucide-react';
+import AppLogo from '@/components/app-logo';
+import { NavFooter } from '@/components/nav-footer';
+import { NavMain } from '@/components/nav-main';
+import { NavUser } from '@/components/nav-user';
 import {
     Sidebar,
     SidebarContent,
@@ -12,28 +18,40 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { dashboard } from "@/routes";
-import type { NavItem } from "@/types";
-import categories from "@/routes/categories";
+} from '@/components/ui/sidebar';
+import { dashboard } from '@/routes';
+import type { NavItem } from '@/types';
+import attributes from '@/routes/attributes';
+import categories from '@/routes/categories';
+import adminProducts from '@/routes/admin/products';
 
 const mainNavItems: NavItem[] = [
     {
-        title: "Dashboard",
+        title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
     },
     {
-        title: "Categories",
+        title: 'Categories',
         href: categories.index(),
         icon: Tag,
+    },
+    {
+        title: 'Products',
+        href: adminProducts.index(),
+        icon: Package,
+    },
+    {
+        title: 'Attributes',
+        href: attributes.index(),
+        icon: SlidersHorizontal,
     },
 ];
 
 const footerNavItems: NavItem[] = [
     {
-        title: "Live site",
-        href: "/",
+        title: 'Live site',
+        href: '/',
         icon: FolderGit2,
     },
 ];
