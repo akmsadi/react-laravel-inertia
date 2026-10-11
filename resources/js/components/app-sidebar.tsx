@@ -3,6 +3,7 @@ import {
     FolderGit2,
     LayoutGrid,
     Package,
+    TicketPercent,
     Users,
     ShoppingCart,
     SlidersHorizontal,
@@ -25,6 +26,7 @@ import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
 import attributes from '@/routes/attributes';
 import categories from '@/routes/categories';
+import coupons from '@/routes/coupons';
 import adminCustomers from '@/routes/admin/customers';
 import adminOrders from '@/routes/admin/orders';
 import adminProducts from '@/routes/admin/products';
@@ -58,6 +60,11 @@ const mainNavItems: NavItem[] = [
         title: 'Customers',
         href: adminCustomers.index(),
         icon: Users,
+    },
+    {
+        title: 'Coupons',
+        href: coupons.index(),
+        icon: TicketPercent,
     },
 ];
 

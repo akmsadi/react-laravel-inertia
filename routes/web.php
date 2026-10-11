@@ -4,6 +4,7 @@ use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\Customer\AuthenticatedCustomerSessionController;
 use App\Http\Controllers\Customer\RegisteredCustomerController;
 use App\Http\Controllers\CustomerManagementController;
@@ -55,6 +56,8 @@ Route::middleware('auth:customer')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
     Route::resource('categories', CategoryController::class);
+    Route::resource('admin/coupons', CouponController::class)
+        ->names('coupons');
     Route::resource('admin/customers', CustomerManagementController::class)
         ->parameters(['customers' => 'customer'])
         ->names('admin.customers');
