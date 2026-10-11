@@ -1,12 +1,12 @@
-import { Form, Head, Link } from "@inertiajs/react";
-import { ArrowLeft } from "lucide-react";
-import InputError from "@/components/input-error";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Spinner } from "@/components/ui/spinner";
-import CheckoutController from "@/actions/App/Http/Controllers/CheckoutController";
-import { index as cartIndex } from "@/routes/cart";
+import { Form, Head, Link } from '@inertiajs/react';
+import { ArrowLeft } from 'lucide-react';
+import InputError from '@/components/input-error';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Spinner } from '@/components/ui/spinner';
+import CheckoutController from '@/actions/App/Http/Controllers/CheckoutController';
+import { index as cartIndex } from '@/routes/cart';
 
 type CheckoutItem = {
     product_id: number;
@@ -39,8 +39,8 @@ export default function CheckoutIndex({
     subtotal,
     customer,
 }: PageProps) {
-    const [firstName, ...lastNameParts] = customer.name.split(" ");
-    const lastName = lastNameParts.join(" ");
+    const [firstName, ...lastNameParts] = customer.name.split(' ');
+    const lastName = lastNameParts.join(' ');
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -120,7 +120,7 @@ export default function CheckoutIndex({
                                                 type="tel"
                                                 name="phone"
                                                 defaultValue={
-                                                    customer.phone ?? ""
+                                                    customer.phone ?? ''
                                                 }
                                             />
                                             <InputError
@@ -198,6 +198,20 @@ export default function CheckoutIndex({
                                                 message={errors.notes}
                                             />
                                         </div>
+                                        <div className="grid gap-2 sm:col-span-2">
+                                            <Label htmlFor="coupon_code">
+                                                Coupon code (optional)
+                                            </Label>
+                                            <Input
+                                                id="coupon_code"
+                                                name="coupon_code"
+                                                className="uppercase"
+                                                autoComplete="off"
+                                            />
+                                            <InputError
+                                                message={errors.coupon_code}
+                                            />
+                                        </div>
                                     </div>
                                 </section>
 
@@ -222,7 +236,7 @@ export default function CheckoutIndex({
                         <div className="mt-4 divide-y divide-zinc-200">
                             {items.map((item) => (
                                 <div
-                                    key={`${item.product_id}-${item.variant_id ?? "base"}`}
+                                    key={`${item.product_id}-${item.variant_id ?? 'base'}`}
                                     className="flex items-start justify-between gap-3 py-3 text-sm"
                                 >
                                     <div>

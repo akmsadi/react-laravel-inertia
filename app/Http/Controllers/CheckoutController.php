@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
+use App\Services\CouponService;
+use App\Services\InventoryService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -16,6 +19,11 @@ use Inertia\Response;
 
 class CheckoutController extends Controller
 {
+    public function __construct(
+        private InventoryService $inventory,
+        private CouponService $coupons,
+    ) {}
+
     public function index(Request $request): Response|RedirectResponse
     {
         $items = $this->resolveCartItems($request);
@@ -28,7 +36,7 @@ class CheckoutController extends Controller
         $customer = $request->user('customer');
 
         return Inertia::render('checkout/index', [
-            'items' => $items->values(),
+            'items' => $items->map(fn (array $item) => Arr::except($item, ['product', 'variant']))->values(),
             'subtotal' => round($items->sum('line_total'), 2),
             'customer' => [
                 'name' => $customer->name,
@@ -63,13 +71,18 @@ class CheckoutController extends Controller
             'postal_code' => ['required', 'string', 'max:20'],
             'country' => ['required', 'string', 'max:255'],
             'notes' => ['nullable', 'string', 'max:1000'],
+            'coupon_code' => ['nullable', 'string', 'max:50'],
         ]);
 
         /** @var Customer $customer */
         $customer = $request->user('customer');
         $subtotal = round($items->sum('line_total'), 2);
 
-        $order = DB::transaction(function () use ($items, $validated, $customer, $subtotal) {
+        $coupon = filled($validated['coupon_code'] ?? null)
+            ? $this->coupons->resolve($validated['coupon_code'], $subtotal)
+            : null;
+
+        $order = DB::transaction(function () use ($items, $validated, $customer, $subtotal, $coupon) {
             $order = Order::create([
                 'customer_id' => $customer->id,
                 'order_number' => $this->generateOrderNumber(),
@@ -94,7 +107,12 @@ class CheckoutController extends Controller
                     'total_price' => $item['line_total'],
                 ]);
 
-                $item['stockable']->decrement('stock_quantity', $item['quantity']);
+                $this->inventory->reserveForOrder(
+                    $order,
+                    $item['product'],
+                    $item['variant'],
+                    $item['quantity'],
+                );
             }
 
             $order->shippingAddress()->create([
@@ -109,6 +127,10 @@ class CheckoutController extends Controller
                 'country' => $validated['country'],
             ]);
 
+            if ($coupon !== null) {
+                $this->coupons->apply($order, $coupon);
+            }
+
             return $order;
         });
 
@@ -122,7 +144,7 @@ class CheckoutController extends Controller
     {
         abort_unless($order->customer_id === $request->user('customer')->id, 404);
 
-        $order->load('items', 'shippingAddress');
+        $order->load('items', 'shippingAddress', 'coupons');
 
         return Inertia::render('checkout/confirmation', [
             'order' => $order,
@@ -183,7 +205,8 @@ class CheckoutController extends Controller
                     'unit_price' => $unitPrice,
                     'line_total' => round($unitPrice * $quantity, 2),
                     'is_available' => $isAvailable,
-                    'stockable' => $variant ?? $product,
+                    'product' => $product,
+                    'variant' => $variant,
                 ];
             })
             ->filter()

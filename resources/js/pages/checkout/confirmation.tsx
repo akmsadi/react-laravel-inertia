@@ -1,6 +1,6 @@
-import { Head, Link } from "@inertiajs/react";
-import { CheckCircle2 } from "lucide-react";
-import { index as productsIndex } from "@/routes/products";
+import { Head, Link } from '@inertiajs/react';
+import { CheckCircle2 } from 'lucide-react';
+import { index as productsIndex } from '@/routes/products';
 
 type OrderItem = {
     id: number;
@@ -26,6 +26,7 @@ type Order = {
     status: string;
     payment_status: string;
     subtotal: string | number;
+    discount_amount: string | number;
     total_amount: string | number;
     notes: string | null;
     items: OrderItem[];
@@ -53,10 +54,10 @@ export default function CheckoutConfirmation({ order }: { order: Order }) {
                         Thank you for your order!
                     </h1>
                     <p className="mt-2 text-sm text-zinc-600">
-                        Order{" "}
+                        Order{' '}
                         <span className="font-medium">
                             {order.order_number}
-                        </span>{" "}
+                        </span>{' '}
                         has been placed and is now {order.status}.
                     </p>
                 </div>
@@ -86,6 +87,14 @@ export default function CheckoutConfirmation({ order }: { order: Order }) {
                                 </div>
                             ))}
                         </div>
+                        {Number(order.discount_amount) > 0 && (
+                            <div className="mt-4 flex items-center justify-between text-sm text-zinc-600">
+                                <span>Discount</span>
+                                <span>
+                                    -{formatPrice(order.discount_amount)}
+                                </span>
+                            </div>
+                        )}
                         <div className="mt-4 flex items-center justify-between border-t border-zinc-200 pt-4 font-semibold text-zinc-950">
                             <span>Total</span>
                             <span>{formatPrice(order.total_amount)}</span>
@@ -103,7 +112,7 @@ export default function CheckoutConfirmation({ order }: { order: Order }) {
                                 {address.street_address}
                                 <br />
                                 {address.city}
-                                {address.state ? `, ${address.state}` : ""}{" "}
+                                {address.state ? `, ${address.state}` : ''}{' '}
                                 {address.postal_code}
                                 <br />
                                 {address.country}
