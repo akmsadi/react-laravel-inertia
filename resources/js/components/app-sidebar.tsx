@@ -32,19 +32,18 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Categories',
-        href: categories.index(),
-        icon: Tag,
-    },
-    {
         title: 'Products',
         href: adminProducts.index(),
         icon: Package,
-    },
-    {
-        title: 'Attributes',
-        href: attributes.index(),
-        icon: SlidersHorizontal,
+        children: [
+            { title: 'Categories', href: categories.index(), icon: Tag },
+            { title: 'Products', href: adminProducts.index(), icon: Package },
+            {
+                title: 'Attributes',
+                href: attributes.index(),
+                icon: SlidersHorizontal,
+            },
+        ],
     },
 ];
 
