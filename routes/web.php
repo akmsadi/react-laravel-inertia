@@ -8,10 +8,14 @@ use App\Http\Controllers\CouponController;
 use App\Http\Controllers\Customer\AuthenticatedCustomerSessionController;
 use App\Http\Controllers\Customer\RegisteredCustomerController;
 use App\Http\Controllers\CustomerManagementController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\OrderCouponController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\OrderManagementController;
+use App\Http\Controllers\OrderShippingAddressController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\ProductAttributeValueController;
 use App\Http\Controllers\ProductController;
@@ -54,7 +58,18 @@ Route::middleware('auth:customer')->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', DashboardController::class)->name('dashboard');
+});
+
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
+    Route::get('admin/inventory', [InventoryController::class, 'index'])->name('admin.inventory.index');
+    Route::post('admin/inventory/adjust', [InventoryController::class, 'adjust'])->name('admin.inventory.adjust');
+    Route::put('admin/orders/{order}/shipping-address', [OrderShippingAddressController::class, 'update'])
+        ->name('admin.orders.shipping-address.update');
+    Route::post('admin/orders/{order}/coupon', [OrderCouponController::class, 'store'])
+        ->name('admin.orders.coupon.store');
+    Route::delete('admin/orders/{order}/coupon', [OrderCouponController::class, 'destroy'])
+        ->name('admin.orders.coupon.destroy');
     Route::resource('categories', CategoryController::class);
     Route::resource('admin/coupons', CouponController::class)
         ->names('coupons');

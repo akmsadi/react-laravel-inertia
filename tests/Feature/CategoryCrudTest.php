@@ -5,7 +5,7 @@ use App\Models\ProductCategory;
 use App\Models\User;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    $this->actingAs(User::factory()->admin()->create());
 });
 
 test('guests cannot access categories', function () {

@@ -15,7 +15,7 @@ test('index lists orders with stats', function () {
     Order::factory()->create(['status' => 'pending', 'payment_status' => 'paid', 'total_amount' => 100]);
     Order::factory()->create(['status' => 'shipped', 'payment_status' => 'pending']);
 
-    $this->actingAs(User::factory()->create())
+    $this->actingAs(User::factory()->admin()->create())
         ->get(route('admin.orders.index'))
         ->assertInertia(fn (Assert $page) => $page
             ->component('admin/orders/index')
@@ -30,7 +30,7 @@ test('index filters by status and search', function () {
     Order::factory()->create(['status' => 'pending', 'customer_id' => $customer->id]);
     Order::factory()->create(['status' => 'shipped']);
 
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
 
     $this->actingAs($user)->get(route('admin.orders.index', ['status' => 'shipped']))
         ->assertInertia(fn (Assert $page) => $page->has('orders.data', 1));
@@ -42,7 +42,7 @@ test('index filters by status and search', function () {
 test('show renders the order edit page', function () {
     $order = Order::factory()->create();
 
-    $this->actingAs(User::factory()->create())
+    $this->actingAs(User::factory()->admin()->create())
         ->get(route('admin.orders.show', $order))
         ->assertInertia(fn (Assert $page) => $page
             ->component('admin/orders/edit')
@@ -52,7 +52,7 @@ test('show renders the order edit page', function () {
 test('order can be updated', function () {
     $order = Order::factory()->create(['status' => 'pending', 'payment_status' => 'pending']);
 
-    $this->actingAs(User::factory()->create())
+    $this->actingAs(User::factory()->admin()->create())
         ->put(route('admin.orders.update', $order), [
             'status' => 'shipped',
             'payment_status' => 'paid',
@@ -71,7 +71,7 @@ test('order can be updated', function () {
 test('order update validates statuses', function () {
     $order = Order::factory()->create();
 
-    $this->actingAs(User::factory()->create())
+    $this->actingAs(User::factory()->admin()->create())
         ->put(route('admin.orders.update', $order), ['status' => 'bogus', 'payment_status' => ''])
         ->assertSessionHasErrors(['status', 'payment_status']);
 });
@@ -81,7 +81,7 @@ test('items can be added, updated and removed with totals recalculated', functio
         'tax_amount' => 0, 'shipping_amount' => 10, 'discount_amount' => 5,
     ]);
     $product = Product::factory()->create(['base_price' => 20]);
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
 
     $this->actingAs($user)
         ->post(route('admin.orders.items.store', $order), ['product_id' => $product->id, 'quantity' => 2])
@@ -112,7 +112,7 @@ test('item variant must belong to the product and items are order scoped', funct
     $order = Order::factory()->create();
     $product = Product::factory()->create();
     $other = ProductVariant::factory()->create();
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
 
     $this->actingAs($user)
         ->post(route('admin.orders.items.store', $order), [

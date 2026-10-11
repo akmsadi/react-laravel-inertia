@@ -13,7 +13,7 @@ test('guests cannot access customer management', function () {
 test('index lists and searches customers', function () {
     Customer::factory()->create(['name' => 'Zed Unique']);
     Customer::factory()->count(2)->create();
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
 
     $this->actingAs($user)->get(route('admin.customers.index'))
         ->assertInertia(fn (Assert $page) => $page->component('admin/customers/index')->has('customers.data', 3));
@@ -24,7 +24,7 @@ test('index lists and searches customers', function () {
 
 test('create and edit pages render', function () {
     $customer = Customer::factory()->create();
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
 
     $this->actingAs($user)->get(route('admin.customers.create'))
         ->assertInertia(fn (Assert $page) => $page->component('admin/customers/create'));
@@ -33,7 +33,7 @@ test('create and edit pages render', function () {
 });
 
 test('customer can be created', function () {
-    $this->actingAs(User::factory()->create())
+    $this->actingAs(User::factory()->admin()->create())
         ->post(route('admin.customers.store'), [
             'name' => 'Jane', 'email' => 'jane@example.com', 'phone' => '123', 'password' => 'secret-pass-123',
         ])
@@ -45,7 +45,7 @@ test('customer can be created', function () {
 test('store validates required fields and unique email', function () {
     $existing = Customer::factory()->create();
 
-    $this->actingAs(User::factory()->create())
+    $this->actingAs(User::factory()->admin()->create())
         ->post(route('admin.customers.store'), ['email' => $existing->email])
         ->assertSessionHasErrors(['name', 'email', 'password']);
 });
@@ -54,7 +54,7 @@ test('customer can be updated and blank password keeps the current one', functio
     $customer = Customer::factory()->create();
     $oldHash = $customer->password;
 
-    $this->actingAs(User::factory()->create())
+    $this->actingAs(User::factory()->admin()->create())
         ->put(route('admin.customers.update', $customer), [
             'name' => 'Renamed', 'email' => $customer->email, 'phone' => '', 'password' => '',
         ])
@@ -64,7 +64,7 @@ test('customer can be updated and blank password keeps the current one', functio
 });
 
 test('customer without orders can be deleted but one with orders cannot', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     $free = Customer::factory()->create();
     $busy = Customer::factory()->create();
     Order::factory()->create(['customer_id' => $busy->id]);
