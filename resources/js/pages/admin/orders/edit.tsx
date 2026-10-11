@@ -2,7 +2,9 @@ import { Form, Head } from '@inertiajs/react';
 import OrderManagementController from '@/actions/App/Http/Controllers/OrderManagementController';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
+import OrderCouponManager from '@/components/order-coupon-manager';
 import OrderItemsManager from '@/components/order-items-manager';
+import OrderShippingAddressForm from '@/components/order-shipping-address-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -25,7 +27,6 @@ export default function OrderEdit({
     paymentStatuses,
     products,
 }: Props) {
-    const address = order.shipping_address?.[0];
     const totals = [
         ['Subtotal', order.subtotal],
         ['Tax', order.tax_amount],
@@ -166,29 +167,11 @@ export default function OrderEdit({
                             {order.customer?.phone}
                         </div>
                     </div>
-                    <div className="rounded-lg border p-4 text-sm">
-                        <h2 className="mb-2 font-medium">Shipping address</h2>
-                        {address ? (
-                            <>
-                                <div>
-                                    {address.first_name} {address.last_name}
-                                </div>
-                                <div className="text-muted-foreground">
-                                    {address.street_address}, {address.city}
-                                    {address.state
-                                        ? `, ${address.state}`
-                                        : ''}{' '}
-                                    {address.postal_code}, {address.country}
-                                </div>
-                                <div className="text-muted-foreground">
-                                    {address.phone}
-                                </div>
-                            </>
-                        ) : (
-                            <span className="text-muted-foreground">—</span>
-                        )}
-                    </div>
                 </div>
+
+                <OrderShippingAddressForm order={order} />
+
+                <OrderCouponManager order={order} />
 
                 <OrderItemsManager order={order} products={products} />
 
