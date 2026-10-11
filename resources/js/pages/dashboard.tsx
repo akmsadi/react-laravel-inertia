@@ -1,25 +1,144 @@
-import { Head } from "@inertiajs/react";
-import { PlaceholderPattern } from "@/components/ui/placeholder-pattern";
-import { dashboard } from "@/routes";
+import { Head, Link } from '@inertiajs/react';
+import { Badge } from '@/components/ui/badge';
+import { dashboard } from '@/routes';
+import inventory from '@/routes/admin/inventory';
+import orders from '@/routes/admin/orders';
 
-export default function Dashboard() {
+type Props = {
+    shop: {
+        stats: {
+            revenue: string;
+            revenue_30_days: string;
+            orders_today: number;
+            pending_orders: number;
+            customers: number;
+            products: number;
+            low_stock: number;
+        };
+        recent_orders: {
+            id: number;
+            order_number: string;
+            status: string;
+            payment_status: string;
+            total_amount: string;
+            customer: { id: number; name: string } | null;
+        }[];
+        low_stock_items: {
+            name: string;
+            sku: string | null;
+            stock_quantity: number;
+        }[];
+    } | null;
+};
+
+export default function Dashboard({ shop }: Props) {
+    if (shop === null) {
+        return (
+            <>
+                <Head title="Dashboard" />
+                <div className="p-4 text-muted-foreground">Welcome back.</div>
+            </>
+        );
+    }
+
+    const { stats } = shop;
+    const cards = [
+        { label: 'Paid revenue', value: stats.revenue },
+        { label: 'Revenue (30 days)', value: stats.revenue_30_days },
+        { label: 'Orders today', value: stats.orders_today },
+        { label: 'Pending orders', value: stats.pending_orders },
+        { label: 'Customers', value: stats.customers },
+        { label: 'Products', value: stats.products },
+    ];
+
     return (
         <>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {cards.map((card) => (
+                        <div key={card.label} className="rounded-lg border p-4">
+                            <div className="text-sm text-muted-foreground">
+                                {card.label}
+                            </div>
+                            <div className="mt-1 text-2xl font-semibold">
+                                {card.value}
+                            </div>
+                        </div>
+                    ))}
                 </div>
-                <div className="relative min-h-screen flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+
+                <div className="grid gap-4 lg:grid-cols-2">
+                    <section className="rounded-lg border p-4">
+                        <div className="mb-2 flex items-center justify-between">
+                            <h2 className="font-medium">Recent orders</h2>
+                            <Link
+                                href={orders.index()}
+                                className="text-sm text-muted-foreground underline"
+                            >
+                                View all
+                            </Link>
+                        </div>
+                        <ul className="divide-y text-sm">
+                            {shop.recent_orders.map((order) => (
+                                <li
+                                    key={order.id}
+                                    className="flex items-center justify-between gap-2 py-2"
+                                >
+                                    <Link
+                                        href={orders.show(order.id)}
+                                        className="font-medium"
+                                    >
+                                        {order.order_number}
+                                    </Link>
+                                    <span className="text-muted-foreground">
+                                        {order.customer?.name ?? 'Guest'}
+                                    </span>
+                                    <Badge variant="secondary">
+                                        {order.status}
+                                    </Badge>
+                                    <span>{order.total_amount}</span>
+                                </li>
+                            ))}
+                            {shop.recent_orders.length === 0 && (
+                                <li className="py-2 text-muted-foreground">
+                                    No orders yet.
+                                </li>
+                            )}
+                        </ul>
+                    </section>
+
+                    <section className="rounded-lg border p-4">
+                        <div className="mb-2 flex items-center justify-between">
+                            <h2 className="font-medium">
+                                Low stock ({stats.low_stock})
+                            </h2>
+                            <Link
+                                href={inventory.index({ query: { low: 1 } })}
+                                className="text-sm text-muted-foreground underline"
+                            >
+                                Manage
+                            </Link>
+                        </div>
+                        <ul className="divide-y text-sm">
+                            {shop.low_stock_items.map((item) => (
+                                <li
+                                    key={`${item.sku}-${item.name}`}
+                                    className="flex items-center justify-between py-2"
+                                >
+                                    <span>{item.name}</span>
+                                    <Badge variant="destructive">
+                                        {item.stock_quantity}
+                                    </Badge>
+                                </li>
+                            ))}
+                            {shop.low_stock_items.length === 0 && (
+                                <li className="py-2 text-muted-foreground">
+                                    Everything is well stocked.
+                                </li>
+                            )}
+                        </ul>
+                    </section>
                 </div>
             </div>
         </>
@@ -29,7 +148,7 @@ export default function Dashboard() {
 Dashboard.layout = {
     breadcrumbs: [
         {
-            title: "Dashboard",
+            title: 'Dashboard',
             href: dashboard(),
         },
     ],
