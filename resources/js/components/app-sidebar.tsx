@@ -7,6 +7,7 @@ import {
     Users,
     ShoppingCart,
     SlidersHorizontal,
+    Store,
     Tag,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
@@ -38,9 +39,9 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Products',
+        title: 'Shop',
         href: adminProducts.index(),
-        icon: Package,
+        icon: Store,
         children: [
             { title: 'Categories', href: categories.index(), icon: Tag },
             { title: 'Products', href: adminProducts.index(), icon: Package },
@@ -49,22 +50,10 @@ const mainNavItems: NavItem[] = [
                 href: attributes.index(),
                 icon: SlidersHorizontal,
             },
+            { title: 'Orders', href: adminOrders.index(), icon: ShoppingCart },
+            { title: 'Customers', href: adminCustomers.index(), icon: Users },
+            { title: 'Coupons', href: coupons.index(), icon: TicketPercent },
         ],
-    },
-    {
-        title: 'Orders',
-        href: adminOrders.index(),
-        icon: ShoppingCart,
-    },
-    {
-        title: 'Customers',
-        href: adminCustomers.index(),
-        icon: Users,
-    },
-    {
-        title: 'Coupons',
-        href: coupons.index(),
-        icon: TicketPercent,
     },
 ];
 
