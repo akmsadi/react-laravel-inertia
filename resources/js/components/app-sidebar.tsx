@@ -3,6 +3,7 @@ import {
     FolderGit2,
     LayoutGrid,
     Package,
+    ShoppingCart,
     SlidersHorizontal,
     Tag,
 } from 'lucide-react';
@@ -23,6 +24,7 @@ import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
 import attributes from '@/routes/attributes';
 import categories from '@/routes/categories';
+import adminOrders from '@/routes/admin/orders';
 import adminProducts from '@/routes/admin/products';
 
 const mainNavItems: NavItem[] = [
@@ -44,6 +46,11 @@ const mainNavItems: NavItem[] = [
                 icon: SlidersHorizontal,
             },
         ],
+    },
+    {
+        title: 'Orders',
+        href: adminOrders.index(),
+        icon: ShoppingCart,
     },
 ];
 

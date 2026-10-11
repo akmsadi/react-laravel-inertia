@@ -8,6 +8,8 @@ use App\Http\Controllers\Customer\AuthenticatedCustomerSessionController;
 use App\Http\Controllers\Customer\RegisteredCustomerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\OrderItemController;
+use App\Http\Controllers\OrderManagementController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\ProductAttributeValueController;
 use App\Http\Controllers\ProductController;
@@ -52,6 +54,14 @@ Route::middleware('auth:customer')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
     Route::resource('categories', CategoryController::class);
+    Route::resource('admin/orders', OrderManagementController::class)
+        ->only(['index', 'show', 'update'])
+        ->names('admin.orders');
+    Route::resource('admin/orders.items', OrderItemController::class)
+        ->parameters(['orders' => 'order', 'items' => 'item'])
+        ->only(['store', 'update', 'destroy'])
+        ->names('admin.orders.items')
+        ->scoped();
     Route::resource('admin/products', ProductManagementController::class)
         ->parameters(['products' => 'product'])
         ->names('admin.products');
