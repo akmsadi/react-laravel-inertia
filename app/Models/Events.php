@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Table('events')]
-#[Fillable(['event_name', 'event_date', 'venue', 'description'])]
+#[Fillable(['title', 'description'])]
 class Events extends Model
 {
     public function images(): HasMany

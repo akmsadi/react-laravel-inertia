@@ -9,6 +9,7 @@ use App\Http\Controllers\Customer\AuthenticatedCustomerSessionController;
 use App\Http\Controllers\Customer\RegisteredCustomerController;
 use App\Http\Controllers\CustomerManagementController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EventManagementController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\NewsletterController;
@@ -17,12 +18,15 @@ use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\OrderManagementController;
 use App\Http\Controllers\OrderShippingAddressController;
 use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\PlayerManagementController;
 use App\Http\Controllers\ProductAttributeValueController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\ProductManagementController;
 use App\Http\Controllers\ProductVariantController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TeamManagementController;
+use App\Http\Controllers\VenueManagementController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -87,6 +91,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('admin/products', ProductManagementController::class)
         ->parameters(['products' => 'product'])
         ->names('admin.products');
+    Route::resource('admin/venues', VenueManagementController::class)
+        ->parameters(['venues' => 'venue'])
+        ->names('admin.venues');
+    Route::resource('admin/players', PlayerManagementController::class)
+        ->parameters(['players' => 'player'])
+        ->names('admin.players');
+    Route::resource('admin/events', EventManagementController::class)
+        ->parameters(['events' => 'event'])
+        ->names('admin.events');
+    Route::resource('admin/teams', TeamManagementController::class)
+        ->parameters(['teams' => 'team'])
+        ->names('admin.teams');
     Route::resource('admin/products.images', ProductImageController::class)
         ->parameters(['products' => 'product', 'images' => 'image'])
         ->only(['store', 'update', 'destroy'])

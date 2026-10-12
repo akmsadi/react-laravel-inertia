@@ -1,15 +1,20 @@
 import { Link } from '@inertiajs/react';
 import {
     Boxes,
+    CalendarDays,
     FolderGit2,
     LayoutGrid,
+    MapPin,
     Package,
+    Shield,
     TicketPercent,
     Users,
     ShoppingCart,
     SlidersHorizontal,
     Store,
     Tag,
+    Trophy,
+    UserRound,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
@@ -33,6 +38,10 @@ import adminCustomers from '@/routes/admin/customers';
 import inventory from '@/routes/admin/inventory';
 import adminOrders from '@/routes/admin/orders';
 import adminProducts from '@/routes/admin/products';
+import adminEvents from '@/routes/admin/events';
+import adminPlayers from '@/routes/admin/players';
+import adminTeams from '@/routes/admin/teams';
+import adminVenues from '@/routes/admin/venues';
 
 const mainNavItems: NavItem[] = [
     {
@@ -56,6 +65,17 @@ const mainNavItems: NavItem[] = [
             { title: 'Orders', href: adminOrders.index(), icon: ShoppingCart },
             { title: 'Customers', href: adminCustomers.index(), icon: Users },
             { title: 'Coupons', href: coupons.index(), icon: TicketPercent },
+        ],
+    },
+    {
+        title: 'Club',
+        href: adminTeams.index(),
+        icon: Trophy,
+        children: [
+            { title: 'Venues', href: adminVenues.index(), icon: MapPin },
+            { title: 'Players', href: adminPlayers.index(), icon: UserRound },
+            { title: 'Events', href: adminEvents.index(), icon: CalendarDays },
+            { title: 'Teams', href: adminTeams.index(), icon: Shield },
         ],
     },
 ];

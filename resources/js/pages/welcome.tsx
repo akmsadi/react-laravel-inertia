@@ -266,7 +266,7 @@ export default function Welcome({
                                                     alt={
                                                         image.description ??
                                                         events[activeEvent]
-                                                            ?.event_name ??
+                                                            ?.title ??
                                                         "Event photo"
                                                     }
                                                     className="size-full object-cover transition duration-300 group-hover:scale-105"
@@ -289,7 +289,7 @@ export default function Welcome({
                                         className={`mb-1 w-full border-l-4 px-4 py-3 text-left transition ${activeEvent === index ? "border-[#1f7a3d] bg-[#e8f2eb]" : "border-transparent hover:bg-zinc-50"}`}
                                     >
                                         <span className="font-display text-2xl uppercase">
-                                            {event.event_name}
+                                            {event.title}
                                         </span>
                                         <span className="mt-1 block text-xs font-bold tracking-widest text-[#1f7a3d] uppercase">
                                             {event.images?.length ?? 0} photos

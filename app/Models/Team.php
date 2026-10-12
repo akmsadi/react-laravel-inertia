@@ -4,15 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Player;
-use App\Models\TeamPlayer;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\TeamAchievement;
 
 #[Fillable(['name', 'slug', 'slogan', 'about', 'captain_id', 'vice_captain_id', 'logo', 'banner', 'established', 'matches', 'wins', 'titles', 'is_external'])]
 class Team extends Model
 {
+    protected function casts(): array
+    {
+        return [
+            'is_external' => 'boolean',
+        ];
+    }
 
     public function captain(): BelongsTo
     {
