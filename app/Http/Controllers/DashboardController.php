@@ -7,12 +7,13 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Services\InventoryService;
+use App\Services\LeaderboardService;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    public function __invoke(): Response
+    public function __invoke(LeaderboardService $leaderboards): Response
     {
         $threshold = InventoryService::LOW_STOCK_THRESHOLD;
         $paid = Order::query()->where('payment_status', 'paid')->where('status', '!=', 'cancelled');
@@ -26,6 +27,10 @@ class DashboardController extends Controller
             ->where('stock_quantity', '<=', $threshold);
 
         return Inertia::render('dashboard', [
+            'leaderboards' => [
+                'batsmen' => $leaderboards->topBatsmen(),
+                'bowlers' => $leaderboards->topBowlers(),
+            ],
             'shop' => [
                 'stats' => [
                     'revenue' => (string) (clone $paid)->sum('total_amount'),

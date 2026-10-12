@@ -1,10 +1,16 @@
 import { Head, Link } from '@inertiajs/react';
+import ClubLeaderboards from '@/components/club-leaderboards';
 import { Badge } from '@/components/ui/badge';
 import { dashboard } from '@/routes';
 import inventory from '@/routes/admin/inventory';
 import orders from '@/routes/admin/orders';
+import type { BatsmanLeaderboardRow, BowlerLeaderboardRow } from '@/types';
 
 type Props = {
+    leaderboards: {
+        batsmen: BatsmanLeaderboardRow[];
+        bowlers: BowlerLeaderboardRow[];
+    };
     shop: {
         stats: {
             revenue: string;
@@ -31,7 +37,7 @@ type Props = {
     };
 };
 
-export default function Dashboard({ shop }: Props) {
+export default function Dashboard({ shop, leaderboards }: Props) {
     const { stats } = shop;
     const cards = [
         { label: 'Paid revenue', value: stats.revenue },
@@ -131,6 +137,11 @@ export default function Dashboard({ shop }: Props) {
                         </ul>
                     </section>
                 </div>
+
+                <ClubLeaderboards
+                    batsmen={leaderboards.batsmen}
+                    bowlers={leaderboards.bowlers}
+                />
             </div>
         </>
     );

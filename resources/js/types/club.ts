@@ -115,3 +115,29 @@ export type MatchSquadEntry = {
     side: 'team_a' | 'team_b';
     is_captain: boolean;
 };
+
+export type BatsmanLeaderboardRow = {
+    id: number;
+    name: string;
+    matches: number;
+    innings: number;
+    runs: number;
+    balls: number;
+    fours: number;
+    sixes: number;
+    highest: string;
+    strike_rate: string;
+    average: string;
+};
+
+export type BowlerLeaderboardRow = {
+    id: number;
+    name: string;
+    matches: number;
+    innings: number;
+    wickets: number;
+    overs: string;
+    runs: number;
+    best: string;
+    economy: string;
+};
