@@ -12,7 +12,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventManagementController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\MatchManagementController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\NewsletterManagementController;
 use App\Http\Controllers\OrderCouponController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\OrderManagementController;
@@ -94,6 +96,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('admin/venues', VenueManagementController::class)
         ->parameters(['venues' => 'venue'])
         ->names('admin.venues');
+    Route::resource('admin/matches', MatchManagementController::class)
+        ->parameters(['matches' => 'match'])
+        ->names('admin.matches');
+    Route::resource('admin/newsletters', NewsletterManagementController::class)
+        ->parameters(['newsletters' => 'newsletter'])
+        ->names('admin.newsletters');
     Route::resource('admin/players', PlayerManagementController::class)
         ->parameters(['players' => 'player'])
         ->names('admin.players');

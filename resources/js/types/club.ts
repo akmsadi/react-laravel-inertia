@@ -45,3 +45,26 @@ export type Team = {
     captain?: PlayerOption | null;
     vice_captain?: PlayerOption | null;
 };
+
+export type MatchRecord = {
+    id: number;
+    match_type: string;
+    format_overs: number;
+    venue_id: number | null;
+    venue?: Venue | null;
+    scheduled_at: string | null;
+    team_name: string;
+    opponent_name: string;
+    toss_winner: string | null;
+    toss_decision: 'bat' | 'bowl' | null;
+    match_status: string;
+    result_type: string | null;
+    result_summary: string | null;
+    notes: string | null;
+};
+
+export type NewsletterSubscriber = {
+    id: number;
+    email: string;
+    created_at: string | null;
+};

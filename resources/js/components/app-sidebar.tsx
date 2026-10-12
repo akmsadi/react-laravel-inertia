@@ -1,12 +1,15 @@
 import { Link } from '@inertiajs/react';
 import {
     Boxes,
+    CalendarClock,
     CalendarDays,
     FolderGit2,
     LayoutGrid,
+    Mail,
     MapPin,
     Package,
     Shield,
+    Swords,
     TicketPercent,
     Users,
     ShoppingCart,
@@ -41,6 +44,8 @@ import adminProducts from '@/routes/admin/products';
 import adminEvents from '@/routes/admin/events';
 import adminPlayers from '@/routes/admin/players';
 import adminTeams from '@/routes/admin/teams';
+import adminNewsletters from '@/routes/admin/newsletters';
+import adminMatches from '@/routes/admin/matches';
 import adminVenues from '@/routes/admin/venues';
 
 const mainNavItems: NavItem[] = [
@@ -72,11 +77,28 @@ const mainNavItems: NavItem[] = [
         href: adminTeams.index(),
         icon: Trophy,
         children: [
-            { title: 'Venues', href: adminVenues.index(), icon: MapPin },
             { title: 'Players', href: adminPlayers.index(), icon: UserRound },
             { title: 'Events', href: adminEvents.index(), icon: CalendarDays },
             { title: 'Teams', href: adminTeams.index(), icon: Shield },
         ],
+    },
+    {
+        title: 'Match Center',
+        href: adminVenues.index(),
+        icon: Swords,
+        children: [
+            {
+                title: 'Matches',
+                href: adminMatches.index(),
+                icon: CalendarClock,
+            },
+            { title: 'Venues', href: adminVenues.index(), icon: MapPin },
+        ],
+    },
+    {
+        title: 'Newsletter',
+        href: adminNewsletters.index(),
+        icon: Mail,
     },
 ];
 

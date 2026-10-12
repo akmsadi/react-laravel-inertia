@@ -2,6 +2,7 @@
 
 use App\Models\Events;
 use App\Models\Matches;
+use App\Models\Newsletter;
 use App\Models\Player;
 use App\Models\Team;
 use App\Models\User;
@@ -242,4 +243,79 @@ test('team form rejects wins greater than matches', function () {
     ])->assertSessionHasErrors('wins');
 
     expect(Team::where('slug', 'invalid-team')->exists())->toBeFalse();
+});
+
+test('match can be created updated and deleted', function () {
+    $venue = Venue::create(['name' => 'Central Ground']);
+
+    $this->post(route('admin.matches.store'), [
+        'match_type' => 't20',
+        'format_overs' => 20,
+        'venue_id' => $venue->id,
+        'scheduled_at' => '2026-11-01 15:00:00',
+        'team_name' => 'Evergreen Team',
+        'opponent_name' => 'Visitors',
+        'match_status' => 'scheduled',
+    ])->assertRedirect(route('admin.matches.index'));
+
+    $match = Matches::firstWhere('opponent_name', 'Visitors');
+    expect($match->venue_id)->toBe($venue->id);
+
+    $this->get(route('admin.matches.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('admin/matches/index')
+            ->where('matches.data.0.venue.name', 'Central Ground'));
+
+    $this->put(route('admin.matches.update', $match), [
+        'match_type' => 'odi',
+        'format_overs' => 50,
+        'venue_id' => null,
+        'team_name' => 'Evergreen Team',
+        'opponent_name' => 'Visitors',
+        'match_status' => 'completed',
+    ])->assertRedirect(route('admin.matches.index'));
+
+    expect($match->refresh()->match_status)->toBe('completed')
+        ->and($match->venue_id)->toBeNull();
+
+    $this->delete(route('admin.matches.destroy', $match))
+        ->assertRedirect(route('admin.matches.index'));
+
+    expect(Matches::count())->toBe(0);
+});
+
+test('match validates required fields and references', function () {
+    $this->post(route('admin.matches.store'), [
+        'match_type' => 'bogus',
+        'venue_id' => 999,
+        'match_status' => 'nope',
+    ])->assertSessionHasErrors([
+        'match_type', 'format_overs', 'venue_id', 'team_name', 'opponent_name', 'match_status',
+    ]);
+});
+
+test('newsletter subscriber can be created updated and deleted', function () {
+    $this->post(route('admin.newsletters.store'), ['email' => 'fan@example.com'])
+        ->assertRedirect(route('admin.newsletters.index'));
+
+    $subscriber = Newsletter::firstWhere('email', 'fan@example.com');
+    expect($subscriber)->not->toBeNull();
+
+    $this->put(route('admin.newsletters.update', $subscriber), ['email' => 'fan@example.com'])
+        ->assertRedirect(route('admin.newsletters.index'));
+
+    $this->put(route('admin.newsletters.update', $subscriber), ['email' => 'new@example.com'])
+        ->assertRedirect(route('admin.newsletters.index'));
+    expect($subscriber->refresh()->email)->toBe('new@example.com');
+
+    $this->delete(route('admin.newsletters.destroy', $subscriber))
+        ->assertRedirect(route('admin.newsletters.index'));
+    expect(Newsletter::count())->toBe(0);
+});
+
+test('newsletter rejects invalid and duplicate emails', function () {
+    Newsletter::create(['email' => 'taken@example.com']);
+
+    $this->post(route('admin.newsletters.store'), ['email' => 'nope'])->assertSessionHasErrors('email');
+    $this->post(route('admin.newsletters.store'), ['email' => 'taken@example.com'])->assertSessionHasErrors('email');
 });
