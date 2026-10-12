@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (Schema::hasColumn('match_player_deposits', 'match_id')) {
+        if (Schema::getConnection()->getDriverName() !== 'sqlite' && Schema::hasColumn('match_player_deposits', 'match_id')) {
             Schema::table('match_player_deposits', function (Blueprint $table): void {
                 $matchForeignKey = collect(Schema::getForeignKeys('match_player_deposits'))
                     ->first(fn (array $key): bool => $key['columns'] === ['match_id']);

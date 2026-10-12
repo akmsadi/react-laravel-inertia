@@ -3,6 +3,8 @@ import {
     Boxes,
     CalendarClock,
     CalendarDays,
+    Receipt,
+    Wallet,
     FolderGit2,
     LayoutGrid,
     Mail,
@@ -41,6 +43,8 @@ import adminCustomers from '@/routes/admin/customers';
 import inventory from '@/routes/admin/inventory';
 import adminOrders from '@/routes/admin/orders';
 import adminProducts from '@/routes/admin/products';
+import adminDeposits from '@/routes/admin/deposits';
+import adminExpenses from '@/routes/admin/expenses';
 import adminEvents from '@/routes/admin/events';
 import adminPlayers from '@/routes/admin/players';
 import adminTeams from '@/routes/admin/teams';
@@ -99,6 +103,16 @@ const mainNavItems: NavItem[] = [
         title: 'Newsletter',
         href: adminNewsletters.index(),
         icon: Mail,
+    },
+    {
+        title: 'Deposits',
+        href: adminDeposits.index(),
+        icon: Wallet,
+    },
+    {
+        title: 'Expenses',
+        href: adminExpenses.index(),
+        icon: Receipt,
     },
 ];
 

@@ -1,9 +1,11 @@
 <?php
 
 use App\Models\Events;
+use App\Models\Expense;
 use App\Models\Matches;
 use App\Models\Newsletter;
 use App\Models\Player;
+use App\Models\PlayerDeposit;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\Venue;
@@ -318,4 +320,94 @@ test('newsletter rejects invalid and duplicate emails', function () {
 
     $this->post(route('admin.newsletters.store'), ['email' => 'nope'])->assertSessionHasErrors('email');
     $this->post(route('admin.newsletters.store'), ['email' => 'taken@example.com'])->assertSessionHasErrors('email');
+});
+
+test('player deposit can be created listed updated and deleted', function () {
+    $player = Player::create([
+        'name' => 'Depositor',
+        'nickname' => 'Dep',
+        'phone' => '555-0100',
+        'address' => '1 Main Street',
+        'status' => 'approved',
+    ]);
+
+    $this->post(route('admin.deposits.store'), [
+        'player_id' => $player->id,
+        'amount' => '150.50',
+        'notes' => 'Season fee',
+    ])->assertRedirect(route('admin.deposits.index'));
+
+    $deposit = PlayerDeposit::firstWhere('player_id', $player->id);
+    expect($deposit->amount)->toBe('150.50');
+
+    $this->get(route('admin.deposits.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('admin/deposits/index')
+            ->has('deposits.data', 1)
+            ->where('deposits.data.0.player.name', 'Depositor'));
+
+    $this->put(route('admin.deposits.update', $deposit), [
+        'player_id' => $player->id,
+        'amount' => '200',
+        'notes' => null,
+    ])->assertRedirect(route('admin.deposits.index'));
+    expect($deposit->fresh()->amount)->toBe('200.00');
+
+    $this->delete(route('admin.deposits.destroy', $deposit))
+        ->assertRedirect(route('admin.deposits.index'));
+    expect(PlayerDeposit::find($deposit->id))->toBeNull();
+});
+
+test('player deposit requires a valid player and positive amount', function () {
+    $this->post(route('admin.deposits.store'), ['player_id' => 999, 'amount' => '0'])
+        ->assertSessionHasErrors(['player_id', 'amount']);
+});
+
+test('expense can be created with or without a match and managed', function () {
+    $match = Matches::create(['opponent_name' => 'Visitors']);
+
+    $this->post(route('admin.expenses.store'), [
+        'match_id' => $match->id,
+        'title' => 'Ground fee',
+        'amount' => 500,
+    ])->assertRedirect(route('admin.expenses.index'));
+
+    $this->post(route('admin.expenses.store'), [
+        'match_id' => '',
+        'title' => 'Kit',
+        'amount' => 200,
+        'notes' => 'New balls',
+    ])->assertRedirect(route('admin.expenses.index'));
+
+    $matchExpense = Expense::firstWhere('title', 'Ground fee');
+    $generalExpense = Expense::firstWhere('title', 'Kit');
+    expect($matchExpense->match_id)->toBe($match->id)
+        ->and($generalExpense->match_id)->toBeNull();
+
+    $this->get(route('admin.expenses.index', ['match' => 'none']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('admin/expenses/index')
+            ->has('expenses.data', 1)
+            ->where('expenses.data.0.title', 'Kit')
+            ->where('total', 200));
+
+    $this->get(route('admin.expenses.index', ['match' => $match->id]))
+        ->assertInertia(fn (Assert $page) => $page->has('expenses.data', 1)
+            ->where('expenses.data.0.title', 'Ground fee'));
+
+    $this->put(route('admin.expenses.update', $generalExpense), [
+        'match_id' => $match->id,
+        'title' => 'Kit bag',
+        'amount' => 250,
+    ])->assertRedirect(route('admin.expenses.index'));
+    expect($generalExpense->fresh())->title->toBe('Kit bag')->match_id->toBe($match->id);
+
+    $this->delete(route('admin.expenses.destroy', $generalExpense))
+        ->assertRedirect(route('admin.expenses.index'));
+    expect(Expense::find($generalExpense->id))->toBeNull();
+});
+
+test('expense validates title amount and match', function () {
+    $this->post(route('admin.expenses.store'), ['match_id' => 999, 'amount' => -5])
+        ->assertSessionHasErrors(['title', 'amount', 'match_id']);
 });

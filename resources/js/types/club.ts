@@ -68,3 +68,29 @@ export type NewsletterSubscriber = {
     email: string;
     created_at: string | null;
 };
+
+export type PlayerDeposit = {
+    id: number;
+    player_id: number;
+    amount: string;
+    notes: string | null;
+    created_at: string | null;
+    player?: PlayerOption | null;
+};
+
+export type MatchOption = {
+    id: number;
+    team_name: string;
+    opponent_name: string;
+    scheduled_at: string | null;
+};
+
+export type Expense = {
+    id: number;
+    match_id: number | null;
+    title: string;
+    amount: string | number;
+    notes: string | null;
+    created_at: string | null;
+    match?: MatchOption | null;
+};

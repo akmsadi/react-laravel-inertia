@@ -9,7 +9,9 @@ use App\Http\Controllers\Customer\AuthenticatedCustomerSessionController;
 use App\Http\Controllers\Customer\RegisteredCustomerController;
 use App\Http\Controllers\CustomerManagementController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DepositManagementController;
 use App\Http\Controllers\EventManagementController;
+use App\Http\Controllers\ExpenseManagementController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MatchManagementController;
@@ -105,6 +107,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('admin/players', PlayerManagementController::class)
         ->parameters(['players' => 'player'])
         ->names('admin.players');
+    Route::resource('admin/deposits', DepositManagementController::class)
+        ->parameters(['deposits' => 'deposit'])
+        ->names('admin.deposits');
+    Route::resource('admin/expenses', ExpenseManagementController::class)
+        ->parameters(['expenses' => 'expense'])
+        ->names('admin.expenses');
     Route::resource('admin/events', EventManagementController::class)
         ->parameters(['events' => 'event'])
         ->names('admin.events');
