@@ -23,7 +23,7 @@ class Matches extends Model
 
     public function players(): BelongsToMany
     {
-        return $this->belongsToMany(Player::class, 'match_players', 'match_id', 'player_id')->withTimestamps();
+        return $this->belongsToMany(Player::class, 'match_players', 'match_id', 'player_id')->withPivot(['side', 'is_captain'])->withTimestamps();
     }
 
     public function summaryBatsmen(): HasMany

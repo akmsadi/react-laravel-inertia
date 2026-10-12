@@ -105,3 +105,13 @@ export type PlayerAccount = {
     owed: number;
     balance: number;
 };
+
+export type SquadPlayerOption = PlayerOption & {
+    guest_of_name: string | null;
+};
+
+export type MatchSquadEntry = {
+    player_id: number;
+    side: 'team_a' | 'team_b';
+    is_captain: boolean;
+};

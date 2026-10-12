@@ -26,18 +26,21 @@ class Expense extends Model
     }
 
     /**
-     * Approved players who may contribute: the match squad for a match expense, otherwise everyone approved.
+     * Players who may contribute: the match squad for a match expense, otherwise every approved player.
      *
      * @return Builder<Player>
      */
     public function eligibleContributors(): Builder
     {
         return Player::query()
-            ->where('status', 'approved')
-            ->when($this->match_id, fn (Builder $query) => $query->whereIn(
-                'id',
-                DB::table('match_players')->where('match_id', $this->match_id)->select('player_id'),
-            ))
+            ->when(
+                $this->match_id,
+                fn (Builder $query) => $query->whereIn(
+                    'id',
+                    DB::table('match_players')->where('match_id', $this->match_id)->select('player_id'),
+                ),
+                fn (Builder $query) => $query->where('status', 'approved'),
+            )
             ->orderBy('name');
     }
 }

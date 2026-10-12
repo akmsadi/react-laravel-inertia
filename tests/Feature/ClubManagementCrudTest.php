@@ -412,20 +412,56 @@ test('expense validates title amount and match', function () {
         ->assertSessionHasErrors(['title', 'amount', 'match_id']);
 });
 
-test('match players can be selected from approved players only', function () {
-    $match = Matches::create(['opponent_name' => 'Visitors']);
-    $approved = Player::create(['name' => 'Ann', 'nickname' => 'A', 'phone' => '1', 'address' => 'x', 'status' => 'approved']);
+test('match squad assigns approved and guest players to sides with one captain per side', function () {
+    $match = Matches::create(['team_name' => 'Sultan', 'opponent_name' => 'Legend']);
+    $ann = Player::create(['name' => 'Ann', 'nickname' => 'A', 'phone' => '1', 'address' => 'x', 'status' => 'approved']);
+    $guest = Player::create(['name' => 'Tom', 'nickname' => 'T', 'phone' => '3', 'address' => 'z', 'status' => 'guest', 'guest_of_player_id' => $ann->id]);
     $pending = Player::create(['name' => 'Bob', 'nickname' => 'B', 'phone' => '2', 'address' => 'y', 'status' => 'pending']);
 
-    $this->put(route('admin.matches.players.update', $match), ['player_ids' => [$approved->id, $pending->id]])
-        ->assertRedirect();
+    $this->put(route('admin.matches.players.update', $match), ['players' => [
+        ['player_id' => $ann->id, 'side' => 'team_a', 'is_captain' => true],
+        ['player_id' => $guest->id, 'side' => 'team_a', 'is_captain' => true],
+        ['player_id' => $pending->id, 'side' => 'team_b', 'is_captain' => false],
+    ]])->assertRedirect();
 
-    expect($match->players()->pluck('players.id')->all())->toBe([$approved->id]);
+    $squad = $match->players()->orderBy('players.id')->get();
+    expect($squad->pluck('id')->all())->toBe([$ann->id, $guest->id])
+        ->and($squad[0]->pivot->is_captain)->toBeTruthy()
+        ->and($squad[1]->pivot->is_captain)->toBeFalsy()
+        ->and($squad[1]->pivot->side)->toBe('team_a');
 
     $this->get(route('admin.matches.edit', $match))
         ->assertInertia(fn (Assert $page) => $page
-            ->has('playerOptions', 1)
-            ->where('playerIds', [$approved->id]));
+            ->has('playerOptions', 2)
+            ->has('squad', 2)
+            ->where('playerOptions.1.guest_of_name', 'Ann'));
+
+    $this->put(route('admin.matches.players.update', $match), ['players' => [
+        ['player_id' => $ann->id, 'side' => 'bogus', 'is_captain' => false],
+    ]])->assertSessionHasErrors('players.0.side');
+});
+
+test('existing match players with legacy sides and statuses are shown and kept', function () {
+    $match = Matches::create(['team_name' => 'Sultan', 'opponent_name' => 'Legend']);
+    $own = Player::create(['name' => 'Ann', 'nickname' => 'A', 'phone' => '1', 'address' => 'x', 'status' => 'approved']);
+    $other = Player::create(['name' => 'Bob', 'nickname' => 'B', 'phone' => '2', 'address' => 'y', 'status' => 'rejected']);
+    $match->players()->attach($own->id, ['side' => 'evergreen', 'is_captain' => true]);
+    $match->players()->attach($other->id, ['side' => 'team_b']);
+    $legacy = Player::create(['name' => 'Cy', 'nickname' => 'C', 'phone' => '3', 'address' => 'z', 'status' => 'approved']);
+    $match->players()->attach($legacy->id, ['side' => 'Legend']);
+
+    $this->get(route('admin.matches.edit', $match))
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('playerOptions', 3)
+            ->where('squad.2', ['player_id' => $legacy->id, 'side' => 'team_b', 'is_captain' => false])
+            ->where('squad.0', ['player_id' => $own->id, 'side' => 'team_a', 'is_captain' => true])
+            ->where('squad.1', ['player_id' => $other->id, 'side' => 'team_b', 'is_captain' => false]));
+
+    $this->put(route('admin.matches.players.update', $match), ['players' => [
+        ['player_id' => $own->id, 'side' => 'team_a', 'is_captain' => true],
+        ['player_id' => $other->id, 'side' => 'team_b', 'is_captain' => false],
+    ]]);
+    expect($match->players()->count())->toBe(2);
 });
 
 test('expense contributors are limited to match players for match expenses', function () {

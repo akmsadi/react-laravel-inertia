@@ -1,19 +1,23 @@
 import { Head } from '@inertiajs/react';
 import MatchManagementController from '@/actions/App/Http/Controllers/MatchManagementController';
-import MatchPlayerController from '@/actions/App/Http/Controllers/MatchPlayerController';
 import MatchForm from '@/components/match-form';
-import PlayerChecklistForm from '@/components/player-checklist-form';
+import MatchSquadForm from '@/components/match-squad-form';
 import matches from '@/routes/admin/matches';
-import type { MatchRecord, PlayerOption, Venue } from '@/types';
+import type {
+    MatchRecord,
+    MatchSquadEntry,
+    SquadPlayerOption,
+    Venue,
+} from '@/types';
 
 type Props = {
     match: MatchRecord;
     venues: Venue[];
-    playerOptions: PlayerOption[];
-    playerIds: number[];
+    playerOptions: SquadPlayerOption[];
+    squad: MatchSquadEntry[];
 };
 
-export default function EditMatch({ match, venues, playerOptions, playerIds }: Props) {
+export default function EditMatch({ match, venues, playerOptions, squad }: Props) {
     return (
         <>
             <Head title={`Edit ${match.team_name} vs ${match.opponent_name}`} />
@@ -24,13 +28,10 @@ export default function EditMatch({ match, venues, playerOptions, playerIds }: P
                     venues={venues}
                     submitLabel="Save changes"
                 />
-                <PlayerChecklistForm
-                    formProps={MatchPlayerController.update.form(match.id)}
-                    title="Players"
-                    description="Approved players taking part in this match."
-                    players={playerOptions}
-                    selectedIds={playerIds}
-                    emptyMessage="No approved players yet."
+                <MatchSquadForm
+                    match={match}
+                    playerOptions={playerOptions}
+                    squad={squad}
                 />
             </div>
         </>
