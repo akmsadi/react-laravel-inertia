@@ -59,12 +59,20 @@ class ExpenseManagementController extends Controller
         return Inertia::render('admin/expenses/edit', [
             'expense' => $expense,
             'matches' => $this->matchOptions(),
+            'contributorOptions' => $expense->eligibleContributors()->get(['id', 'name']),
+            'contributorIds' => $expense->contributors()->pluck('players.id'),
         ]);
     }
 
     public function update(ExpenseRequest $request, Expense $expense): RedirectResponse
     {
         $expense->update($request->validated());
+
+        $expense->contributors()->sync(
+            $expense->eligibleContributors()
+                ->whereIn('id', $expense->contributors()->pluck('players.id'))
+                ->pluck('id'),
+        );
 
         return to_route('admin.expenses.index');
     }

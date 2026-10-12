@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MatchRequest;
 use App\Models\Matches;
+use App\Models\Player;
 use App\Models\Venue;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -46,6 +47,8 @@ class MatchManagementController extends Controller
         return Inertia::render('admin/matches/edit', [
             'match' => $match,
             'venues' => $this->venueOptions(),
+            'playerOptions' => Player::query()->where('status', 'approved')->orderBy('name')->get(['id', 'name']),
+            'playerIds' => $match->players()->pluck('players.id'),
         ]);
     }
 

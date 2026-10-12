@@ -411,3 +411,54 @@ test('expense validates title amount and match', function () {
     $this->post(route('admin.expenses.store'), ['match_id' => 999, 'amount' => -5])
         ->assertSessionHasErrors(['title', 'amount', 'match_id']);
 });
+
+test('match players can be selected from approved players only', function () {
+    $match = Matches::create(['opponent_name' => 'Visitors']);
+    $approved = Player::create(['name' => 'Ann', 'nickname' => 'A', 'phone' => '1', 'address' => 'x', 'status' => 'approved']);
+    $pending = Player::create(['name' => 'Bob', 'nickname' => 'B', 'phone' => '2', 'address' => 'y', 'status' => 'pending']);
+
+    $this->put(route('admin.matches.players.update', $match), ['player_ids' => [$approved->id, $pending->id]])
+        ->assertRedirect();
+
+    expect($match->players()->pluck('players.id')->all())->toBe([$approved->id]);
+
+    $this->get(route('admin.matches.edit', $match))
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('playerOptions', 1)
+            ->where('playerIds', [$approved->id]));
+});
+
+test('expense contributors are limited to match players for match expenses', function () {
+    $inMatch = Player::create(['name' => 'Ann', 'nickname' => 'A', 'phone' => '1', 'address' => 'x', 'status' => 'approved']);
+    $outOfMatch = Player::create(['name' => 'Cat', 'nickname' => 'C', 'phone' => '3', 'address' => 'z', 'status' => 'approved']);
+    $pending = Player::create(['name' => 'Bob', 'nickname' => 'B', 'phone' => '2', 'address' => 'y', 'status' => 'pending']);
+    $match = Matches::create(['opponent_name' => 'Visitors']);
+    $match->players()->attach($inMatch->id);
+
+    $matchExpense = Expense::create(['match_id' => $match->id, 'title' => 'Ground', 'amount' => 100]);
+    $generalExpense = Expense::create(['title' => 'Kit', 'amount' => 50]);
+
+    $this->put(route('admin.expenses.contributors.update', $matchExpense), [
+        'player_ids' => [$inMatch->id, $outOfMatch->id, $pending->id],
+    ])->assertRedirect();
+    expect($matchExpense->contributors()->pluck('players.id')->all())->toBe([$inMatch->id]);
+
+    $this->put(route('admin.expenses.contributors.update', $generalExpense), [
+        'player_ids' => [$inMatch->id, $outOfMatch->id, $pending->id],
+    ])->assertRedirect();
+    expect($generalExpense->contributors()->pluck('players.id')->sort()->values()->all())
+        ->toBe([$inMatch->id, $outOfMatch->id]);
+
+    $this->get(route('admin.expenses.edit', $matchExpense))
+        ->assertInertia(fn (Assert $page) => $page->has('contributorOptions', 1)->where('contributorIds', [$inMatch->id]));
+
+    $this->get(route('admin.expenses.edit', $generalExpense))
+        ->assertInertia(fn (Assert $page) => $page->has('contributorOptions', 2));
+
+    $this->put(route('admin.expenses.update', $generalExpense), [
+        'match_id' => $match->id,
+        'title' => 'Kit',
+        'amount' => 50,
+    ]);
+    expect($generalExpense->contributors()->pluck('players.id')->all())->toBe([$inMatch->id]);
+});

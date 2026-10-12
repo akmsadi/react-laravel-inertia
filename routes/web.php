@@ -11,10 +11,12 @@ use App\Http\Controllers\CustomerManagementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepositManagementController;
 use App\Http\Controllers\EventManagementController;
+use App\Http\Controllers\ExpenseContributorController;
 use App\Http\Controllers\ExpenseManagementController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MatchManagementController;
+use App\Http\Controllers\MatchPlayerController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\NewsletterManagementController;
 use App\Http\Controllers\OrderCouponController;
@@ -110,6 +112,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('admin/deposits', DepositManagementController::class)
         ->parameters(['deposits' => 'deposit'])
         ->names('admin.deposits');
+    Route::put('admin/expenses/{expense}/contributors', [ExpenseContributorController::class, 'update'])
+        ->name('admin.expenses.contributors.update');
+    Route::put('admin/matches/{match}/players', [MatchPlayerController::class, 'update'])
+        ->name('admin.matches.players.update');
     Route::resource('admin/expenses', ExpenseManagementController::class)
         ->parameters(['expenses' => 'expense'])
         ->names('admin.expenses');
