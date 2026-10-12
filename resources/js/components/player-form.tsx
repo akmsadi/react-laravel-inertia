@@ -95,8 +95,10 @@ export default function PlayerForm({
                             defaultValue={player?.status ?? 'pending'}
                             className={selectClassName}
                         >
-                            <option value="pending">Pending</option>
                             <option value="approved">Approved</option>
+                            <option value="pending">Pending</option>
+                            <option value="guest">Guest</option>
+                            <option value="rejected">Rejected</option>
                         </select>
                         <InputError message={errors.status} />
                     </div>

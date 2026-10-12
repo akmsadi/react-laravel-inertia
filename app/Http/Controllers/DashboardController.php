@@ -39,9 +39,9 @@ class DashboardController extends Controller
                 'recent_orders' => Order::query()
                     ->with('customer:id,name')
                     ->latest('id')
-                    ->limit(5)
+                    ->limit(10)
                     ->get(['id', 'customer_id', 'order_number', 'status', 'payment_status', 'total_amount', 'created_at']),
-                'low_stock_items' => $lowStockProducts->orderBy('stock_quantity')->limit(5)
+                'low_stock_items' => $lowStockProducts->orderBy('stock_quantity')->limit(10)
                     ->get(['id', 'name', 'sku', 'stock_quantity'])
                     ->map(fn (Product $product) => [
                         'name' => $product->name,
@@ -49,7 +49,7 @@ class DashboardController extends Controller
                         'stock_quantity' => $product->stock_quantity,
                     ])
                     ->concat(
-                        $lowStockVariants->with('product:id,name')->orderBy('stock_quantity')->limit(5)->get()
+                        $lowStockVariants->with('product:id,name')->orderBy('stock_quantity')->limit(10)->get()
                             ->map(fn (ProductVariant $variant) => [
                                 'name' => trim($variant->product?->name.' - '.$variant->name, ' -'),
                                 'sku' => $variant->sku,
@@ -57,7 +57,7 @@ class DashboardController extends Controller
                             ])
                     )
                     ->sortBy('stock_quantity')
-                    ->take(5)
+                    ->take(10)
                     ->values(),
             ],
         ]);

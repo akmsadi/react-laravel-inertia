@@ -1,4 +1,4 @@
-import { Form, Head, Link } from '@inertiajs/react';
+import { Form, Head, Link, router } from '@inertiajs/react';
 import { Pencil, Trash2 } from 'lucide-react';
 import PlayerManagementController from '@/actions/App/Http/Controllers/PlayerManagementController';
 import { Badge } from '@/components/ui/badge';
@@ -9,9 +9,10 @@ import type { Paginated, Player } from '@/types';
 
 type Props = {
     players: Paginated<Player>;
+    status: Player['status'] | null;
 };
 
-export default function PlayersIndex({ players: paginated }: Props) {
+export default function PlayersIndex({ players: paginated, status }: Props) {
     return (
         <>
             <Head title="Players" />
@@ -21,6 +22,29 @@ export default function PlayersIndex({ players: paginated }: Props) {
                     <Button asChild>
                         <Link href={players.create()}>New player</Link>
                     </Button>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                    <label htmlFor="status-filter">Status</label>
+                    <select
+                        id="status-filter"
+                        value={status ?? ''}
+                        onChange={(event) =>
+                            router.get(
+                                players.index.url(),
+                                event.target.value
+                                    ? { status: event.target.value }
+                                    : {},
+                                { preserveState: true },
+                            )
+                        }
+                        className="h-9 rounded-md border bg-background px-3"
+                    >
+                        <option value="">All</option>
+                        <option value="approved">Approved</option>
+                        <option value="pending">Pending</option>
+                        <option value="guest">Guest</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
                 </div>
                 <div className="overflow-hidden rounded-lg border">
                     <table className="w-full text-left text-sm">
@@ -40,13 +64,8 @@ export default function PlayersIndex({ players: paginated }: Props) {
                         <tbody>
                             {paginated.data.map((player) => (
                                 <tr key={player.id} className="border-t">
-                                    <td className="px-4 py-2">
-                                        <div className="font-medium">
-                                            {player.name}
-                                        </div>
-                                        <div className="text-muted-foreground">
-                                            {player.nickname}
-                                        </div>
+                                    <td className="px-4 py-2 font-medium">
+                                        {player.name}
                                     </td>
                                     <td className="px-4 py-2">
                                         {player.organization ?? '-'}
@@ -59,7 +78,10 @@ export default function PlayersIndex({ players: paginated }: Props) {
                                             variant={
                                                 player.status === 'approved'
                                                     ? 'default'
-                                                    : 'secondary'
+                                                    : player.status ===
+                                                        'rejected'
+                                                      ? 'destructive'
+                                                      : 'secondary'
                                             }
                                         >
                                             {player.status}

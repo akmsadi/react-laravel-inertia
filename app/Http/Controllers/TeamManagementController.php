@@ -19,7 +19,7 @@ class TeamManagementController extends Controller
             'teams' => Team::query()
                 ->with(['captain:id,name', 'viceCaptain:id,name'])
                 ->latest('id')
-                ->paginate(15),
+                ->paginate(50),
         ]);
     }
 

@@ -14,7 +14,7 @@ class VenueManagementController extends Controller
     public function index(): Response
     {
         return Inertia::render('admin/venues/index', [
-            'venues' => Venue::query()->latest('id')->paginate(15),
+            'venues' => Venue::query()->latest('id')->paginate(50),
         ]);
     }
 

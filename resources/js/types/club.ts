@@ -22,7 +22,7 @@ export type Player = {
     email: string | null;
     phone: string;
     address: string;
-    status: 'pending' | 'approved';
+    status: 'approved' | 'pending' | 'guest' | 'rejected';
     guest_of_player_id: number | null;
     guest_of?: PlayerOption | null;
 };

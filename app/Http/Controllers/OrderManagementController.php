@@ -33,7 +33,7 @@ class OrderManagementController extends Controller
                         ->orWhere('email', 'like', "%{$search}%"));
             }))
             ->latest('id')
-            ->paginate(15)
+            ->paginate(50)
             ->withQueryString();
 
         return Inertia::render('admin/orders/index', [

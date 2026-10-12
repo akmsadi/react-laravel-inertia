@@ -6,18 +6,25 @@ use App\Http\Requests\PlayerManagementRequest;
 use App\Models\Player;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class PlayerManagementController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $status = $request->query('status');
+        $status = in_array($status, ['approved', 'pending', 'guest', 'rejected'], true) ? $status : null;
+
         return Inertia::render('admin/players/index', [
             'players' => Player::query()
                 ->with('guestOf:id,name')
-                ->latest('id')
-                ->paginate(15),
+                ->when($status, fn ($query) => $query->where('status', $status))
+                ->orderBy('name')
+                ->paginate(50)
+                ->withQueryString(),
+            'status' => $status,
         ]);
     }
 

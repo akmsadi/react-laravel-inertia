@@ -19,7 +19,7 @@ class CouponController extends Controller
             'coupons' => Coupon::query()
                 ->when($search !== '', fn ($query) => $query->where('code', 'like', "%{$search}%"))
                 ->latest('id')
-                ->paginate(15)
+                ->paginate(50)
                 ->withQueryString(),
             'filters' => ['search' => $search],
         ]);

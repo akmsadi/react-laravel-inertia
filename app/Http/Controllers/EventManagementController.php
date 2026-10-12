@@ -13,7 +13,7 @@ class EventManagementController extends Controller
     public function index(): Response
     {
         return Inertia::render('admin/events/index', [
-            'events' => Events::query()->latest('id')->paginate(15),
+            'events' => Events::query()->latest('id')->paginate(50),
         ]);
     }
 

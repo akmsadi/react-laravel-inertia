@@ -24,7 +24,7 @@ class CustomerManagementController extends Controller
                         ->orWhere('phone', 'like', "%{$search}%");
                 }))
                 ->latest('id')
-                ->paginate(15)
+                ->paginate(50)
                 ->withQueryString(),
             'filters' => ['search' => $search],
         ]);

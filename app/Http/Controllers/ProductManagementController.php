@@ -21,7 +21,7 @@ class ProductManagementController extends Controller
             'products' => Product::query()
                 ->with('category:id,name')
                 ->latest('id')
-                ->paginate(15),
+                ->paginate(50),
         ]);
     }
 

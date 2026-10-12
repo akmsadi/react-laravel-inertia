@@ -29,7 +29,7 @@ class PlayerManagementRequest extends FormRequest
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:1000'],
-            'status' => ['required', Rule::in(['pending', 'approved'])],
+            'status' => ['required', Rule::in(['approved', 'pending', 'guest', 'rejected'])],
             'guest_of_player_id' => [
                 'nullable',
                 'integer',

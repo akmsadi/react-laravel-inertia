@@ -56,7 +56,7 @@ class InventoryController extends Controller
             ->values();
 
         $page = max(1, $request->integer('page', 1));
-        $perPage = 15;
+        $perPage = 50;
         $stock = new LengthAwarePaginator(
             $rows->forPage($page, $perPage)->values(),
             $rows->count(),
