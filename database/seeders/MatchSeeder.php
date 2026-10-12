@@ -2,92 +2,57 @@
 
 namespace Database\Seeders;
 
-use App\Models\Matches;
-use App\Models\Venue;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MatchSeeder extends Seeder
 {
+    /**
+     * Seed the matches. Requires venues.
+     */
     public function run(): void
     {
-        $homeGround = Venue::updateOrCreate([
-            'name' => 'Evergreen Oval',
-        ]);
-
-        $cityGround = Venue::updateOrCreate([
-            'name' => 'City Sports Ground',
-        ]);
-
-        $matches = [
-            [
-                'scheduled_at' => now()->addDays(4)->setTime(10, 30),
-                'team_name' => 'Evergreen XI',
-                'opponent_name' => 'Riverside Cricket Club',
-                'venue_id' => $homeGround->id,
-                'match_status' => 'scheduled',
-                'result_type' => null,
-                'result_summary' => null,
-                'notes' => 'League fixture. Gates open at 9:30 AM.',
-            ],
-            [
-                'scheduled_at' => now()->subDays(4)->setTime(10, 30),
-                'team_name' => 'Evergreen XI',
-                'opponent_name' => 'Northside Strikers',
-                'venue_id' => $homeGround->id,
-                'match_status' => 'completed',
-                'result_type' => 'win',
-                'result_summary' => 'Evergreen XI won by 48 runs',
-                'notes' => 'Player of the match: Arjun Patel',
-            ],
-            [
-                'scheduled_at' => now()->subDays(11)->setTime(14, 0),
-                'team_name' => 'Evergreen XI',
-                'opponent_name' => 'Harbour Warriors',
-                'venue_id' => $cityGround->id,
-                'match_status' => 'completed',
-                'result_type' => 'win',
-                'result_summary' => 'Evergreen XI won by 6 wickets',
-                'notes' => 'A composed chase under evening lights.',
-            ],
-            [
-                'scheduled_at' => now()->subDays(18)->setTime(10, 30),
-                'team_name' => 'Evergreen XI',
-                'opponent_name' => 'Lakeside Lions',
-                'venue_id' => $homeGround->id,
-                'match_status' => 'completed',
-                'result_type' => 'loss',
-                'result_summary' => 'Lakeside Lions won by 12 runs',
-                'notes' => 'A close contest decided in the final over.',
-            ],
-            [
-                'scheduled_at' => now()->subDays(25)->setTime(14, 0),
-                'team_name' => 'Evergreen XI',
-                'opponent_name' => 'West End Royals',
-                'venue_id' => $cityGround->id,
-                'match_status' => 'completed',
-                'result_type' => 'draw',
-                'result_summary' => 'Match drawn after rain interruption',
-                'notes' => 'Both teams shared the points.',
-            ],
-        ];
-
-        foreach ($matches as $match) {
-            Matches::updateOrCreate(
-                [
-                    'scheduled_at' => $match['scheduled_at'],
-                    'team_name' => $match['team_name'],
-                    'opponent_name' => $match['opponent_name'],
-                ],
-                [
-                    'match_type' => 'limited_overs',
-                    'format_overs' => 20,
-                    'venue_id' => $match['venue_id'],
-                    'match_status' => $match['match_status'],
-                    'result_type' => $match['result_type'],
-                    'result_summary' => $match['result_summary'],
-                    'notes' => $match['notes'],
-                ],
-            );
-        }
+        DB::table('matches')->upsert([
+            ['id' => 3, 'match_type' => 't20', 'format_overs' => 20, 'venue' => 'Divisional Women\'s Sports Complex, Chattogram', 'scheduled_at' => '2026-06-06 16:53:00', 'team_name' => 'Challengers Red', 'opponent_name' => 'Challengers Blue', 'toss_winner' => 'team_a', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => 'won', 'result_summary' => 'Challengers Red won by 7 wickets', 'notes' => null, 'venue_id' => 5, 'deleted_at' => null, 'created_at' => '2026-06-05 10:53:21', 'updated_at' => '2026-06-25 12:39:13'],
+            ['id' => 4, 'match_type' => 't20', 'format_overs' => 20, 'venue' => 'Divisional Women\'s Sports Complex, Chattogram', 'scheduled_at' => '2026-06-20 09:00:00', 'team_name' => 'Challengers blue', 'opponent_name' => 'Challengers red', 'toss_winner' => 'team_a', 'toss_decision' => 'bowl', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => null, 'venue_id' => 5, 'deleted_at' => null, 'created_at' => '2026-06-16 01:01:50', 'updated_at' => '2026-06-25 01:41:50'],
+            ['id' => 5, 'match_type' => 't20', 'format_overs' => 20, 'venue' => 'Divisional Women\'s Sports Complex, Chattogram', 'scheduled_at' => '2026-05-16 07:00:00', 'team_name' => 'VF-Bold', 'opponent_name' => 'Chittagong Challengers', 'toss_winner' => 'team_b', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Chittagong Challengers won by 124 runs', 'notes' => 'Rest of the scoreboard not found', 'venue_id' => 5, 'deleted_at' => null, 'created_at' => '2026-06-25 01:34:00', 'updated_at' => '2026-08-17 13:53:34'],
+            ['id' => 6, 'match_type' => 't20', 'format_overs' => 20, 'venue' => 'Divisional Women\'s Sports Complex, Chattogram', 'scheduled_at' => '2026-05-23 07:00:00', 'team_name' => 'Challengers Red', 'opponent_name' => 'Challengers Blue', 'toss_winner' => 'team_a', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => null, 'venue_id' => 5, 'deleted_at' => null, 'created_at' => '2026-06-25 01:34:51', 'updated_at' => '2026-06-25 13:07:02'],
+            ['id' => 7, 'match_type' => 't20', 'format_overs' => 20, 'venue' => 'Divisional Women\'s Sports Complex, Chattogram', 'scheduled_at' => '2026-05-26 07:00:00', 'team_name' => 'Chittagong Challengers', 'opponent_name' => 'Cheragi Boys', 'toss_winner' => 'team_a', 'toss_decision' => 'bat', 'match_status' => 'abandoned', 'result_type' => null, 'result_summary' => null, 'notes' => 'Friendly match. Abandoned due to Rain', 'venue_id' => 5, 'deleted_at' => null, 'created_at' => '2026-06-25 01:36:15', 'updated_at' => '2026-06-25 13:38:34'],
+            ['id' => 9, 'match_type' => 't20', 'format_overs' => 20, 'venue' => 'Chottoground', 'scheduled_at' => '2026-06-13 20:30:00', 'team_name' => 'Challengers Red', 'opponent_name' => 'Challengers Blue', 'toss_winner' => null, 'toss_decision' => null, 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => 'Indoor Turf', 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-06-25 17:01:41', 'updated_at' => '2026-06-25 17:12:26'],
+            ['id' => 10, 'match_type' => 'odi', 'format_overs' => 12, 'venue' => 'PHP Turf', 'scheduled_at' => '2026-04-04 08:00:00', 'team_name' => 'Challengers Red', 'opponent_name' => 'Challengers Blue', 'toss_winner' => null, 'toss_decision' => null, 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => null, 'venue_id' => 9, 'deleted_at' => null, 'created_at' => '2026-06-25 19:06:58', 'updated_at' => '2026-06-25 19:19:06'],
+            ['id' => 11, 'match_type' => 'odi', 'format_overs' => 16, 'venue' => 'Moijjartek', 'scheduled_at' => '2026-04-11 09:00:00', 'team_name' => 'Challengers Red', 'opponent_name' => 'Challengers Blue', 'toss_winner' => null, 'toss_decision' => null, 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => null, 'venue_id' => 11, 'deleted_at' => null, 'created_at' => '2026-06-25 19:11:46', 'updated_at' => '2026-06-25 19:18:49'],
+            ['id' => 12, 'match_type' => 'odi', 'format_overs' => 12, 'venue' => 'Chottoground Turf', 'scheduled_at' => '2026-04-14 08:00:00', 'team_name' => 'Challengers Red', 'opponent_name' => 'Challengers Blue', 'toss_winner' => null, 'toss_decision' => null, 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => 'Championship practice match', 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-06-25 19:15:56', 'updated_at' => '2026-06-25 19:18:40'],
+            ['id' => 13, 'match_type' => 'odi', 'format_overs' => 16, 'venue' => 'Moijjartek', 'scheduled_at' => '2026-04-25 08:00:00', 'team_name' => 'Challengers Red', 'opponent_name' => 'Challengers Blue', 'toss_winner' => null, 'toss_decision' => null, 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => null, 'venue_id' => 11, 'deleted_at' => null, 'created_at' => '2026-06-25 19:21:50', 'updated_at' => '2026-06-25 19:22:43'],
+            ['id' => 14, 'match_type' => 'odi', 'format_overs' => 12, 'venue' => 'Chottoground Turf', 'scheduled_at' => '2026-05-01 08:00:00', 'team_name' => 'Challengers Red', 'opponent_name' => 'Challengers Blue', 'toss_winner' => null, 'toss_decision' => null, 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => null, 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-06-25 19:26:00', 'updated_at' => '2026-06-25 19:26:46'],
+            ['id' => 15, 'match_type' => 'odi', 'format_overs' => 12, 'venue' => 'Chottoground Turf', 'scheduled_at' => '2026-05-09 08:00:00', 'team_name' => 'Challengers Red', 'opponent_name' => 'Challengers Blue', 'toss_winner' => null, 'toss_decision' => null, 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => null, 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-06-25 19:28:17', 'updated_at' => '2026-06-25 19:28:17'],
+            ['id' => 16, 'match_type' => 'odi', 'format_overs' => 18, 'venue' => 'BKSP', 'scheduled_at' => '2026-06-26 08:00:00', 'team_name' => 'Chittagong Challengers', 'opponent_name' => 'Oxygen sports team', 'toss_winner' => 'team_a', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => 'Friendly match arranged by Nasir brother', 'venue_id' => 5, 'deleted_at' => null, 'created_at' => '2026-06-26 14:17:19', 'updated_at' => '2026-06-26 15:41:52'],
+            ['id' => 17, 'match_type' => 't20', 'format_overs' => 20, 'venue' => 'BKSP', 'scheduled_at' => '2026-06-27 07:00:00', 'team_name' => 'Challenger Iqbal', 'opponent_name' => 'Challenger Anis', 'toss_winner' => 'team_b', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => null, 'venue_id' => 5, 'deleted_at' => null, 'created_at' => '2026-06-26 22:59:28', 'updated_at' => '2026-06-27 19:15:37'],
+            ['id' => 18, 'match_type' => 'odi', 'format_overs' => 8, 'venue' => 'BKSP', 'scheduled_at' => '2026-06-27 10:30:00', 'team_name' => 'Challenger Iqbal', 'opponent_name' => 'Challenger Anis', 'toss_winner' => 'team_a', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => null, 'venue_id' => 5, 'deleted_at' => null, 'created_at' => '2026-06-27 16:29:49', 'updated_at' => '2026-07-09 20:22:11'],
+            ['id' => 19, 'match_type' => 't20', 'format_overs' => 20, 'venue' => 'BKSP', 'scheduled_at' => '2026-07-04 08:00:00', 'team_name' => 'Challenger VF+WWW', 'opponent_name' => 'Challenger Anis', 'toss_winner' => 'team_b', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Challenger VF+WWW won by 6 wickets', 'notes' => null, 'venue_id' => 5, 'deleted_at' => null, 'created_at' => '2026-07-04 19:07:30', 'updated_at' => '2026-07-09 20:05:25'],
+            ['id' => 20, 'match_type' => 't10', 'format_overs' => 8, 'venue' => 'BKSP', 'scheduled_at' => '2026-07-04 10:00:00', 'team_name' => 'Challenger VF+WWW', 'opponent_name' => 'Challenger Anis', 'toss_winner' => 'team_a', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => null, 'venue_id' => 5, 'deleted_at' => null, 'created_at' => '2026-07-04 21:10:28', 'updated_at' => '2026-07-09 19:37:11'],
+            ['id' => 21, 'match_type' => 'odi', 'format_overs' => 15, 'venue' => 'Chottoground', 'scheduled_at' => '2026-07-11 07:30:00', 'team_name' => 'Brazil', 'opponent_name' => 'Argentina', 'toss_winner' => 'team_a', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Brazil won by 2 runs', 'notes' => 'Brazil vs Argentina friendly match', 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-07-11 21:50:22', 'updated_at' => '2026-08-10 14:34:10'],
+            ['id' => 22, 'match_type' => 'football', 'format_overs' => 1, 'venue' => 'Fortune Sports Arena', 'scheduled_at' => '2026-07-12 21:57:00', 'team_name' => 'Brazil', 'opponent_name' => 'Argentina', 'toss_winner' => null, 'toss_decision' => null, 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => 'Friendly football match', 'venue_id' => 12, 'deleted_at' => null, 'created_at' => '2026-07-16 18:59:53', 'updated_at' => '2026-07-18 23:32:34'],
+            ['id' => 23, 'match_type' => 'odi', 'format_overs' => 16, 'venue' => 'Chottoground', 'scheduled_at' => '2026-07-18 08:30:00', 'team_name' => 'Challenger Shamim', 'opponent_name' => 'Challenger Avijit', 'toss_winner' => 'team_a', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Challenger Shamim won by 33 runs', 'notes' => null, 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-07-18 15:29:16', 'updated_at' => '2026-07-20 14:56:59'],
+            ['id' => 24, 'match_type' => 't10', 'format_overs' => 14, 'venue' => 'Chottoground', 'scheduled_at' => '2026-07-25 06:30:00', 'team_name' => 'Challenger Mehdi', 'opponent_name' => 'Challenger Arif', 'toss_winner' => 'team_b', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Challenger Mehdi won by 9 wickets', 'notes' => null, 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-07-25 12:41:09', 'updated_at' => '2026-07-25 14:00:38'],
+            ['id' => 25, 'match_type' => 'football', 'format_overs' => 20, 'venue' => 'Bali Arcade', 'scheduled_at' => '2026-07-27 21:00:00', 'team_name' => 'Challenger Sadi', 'opponent_name' => 'Challenger Ashraful', 'toss_winner' => null, 'toss_decision' => null, 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => null, 'venue_id' => 13, 'deleted_at' => null, 'created_at' => '2026-07-28 13:50:40', 'updated_at' => '2026-07-29 17:10:39'],
+            ['id' => 26, 'match_type' => 't20', 'format_overs' => 15, 'venue' => 'Chottoground', 'scheduled_at' => '2026-08-01 08:00:00', 'team_name' => 'Challenger Salauddin', 'opponent_name' => 'Challenger Nasir', 'toss_winner' => 'team_a', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Challenger Salauddin won by 21 runs', 'notes' => null, 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-07-31 18:08:52', 'updated_at' => '2026-08-01 20:24:37'],
+            ['id' => 27, 'match_type' => 't20', 'format_overs' => 15, 'venue' => 'Chottoground', 'scheduled_at' => '2026-08-05 07:00:00', 'team_name' => 'Challenger Miraz', 'opponent_name' => 'Challenger Reaz', 'toss_winner' => 'team_b', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Challenger Reaz won by 40 runs', 'notes' => null, 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-08-04 23:29:06', 'updated_at' => '2026-08-06 14:43:38'],
+            ['id' => 28, 'match_type' => 't20', 'format_overs' => 7, 'venue' => 'Chottoground', 'scheduled_at' => '2026-08-05 08:30:00', 'team_name' => 'Challenger Miraz', 'opponent_name' => 'Challenger Reaz', 'toss_winner' => null, 'toss_decision' => null, 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Challenger Reaz won by 10 wickets', 'notes' => null, 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-08-06 14:32:27', 'updated_at' => '2026-08-06 14:40:01'],
+            ['id' => 29, 'match_type' => 'football', 'format_overs' => 20, 'venue' => 'Fortune Sports Arena', 'scheduled_at' => '2026-08-05 19:00:00', 'team_name' => 'Challenger Red', 'opponent_name' => 'Challenger Blue', 'toss_winner' => null, 'toss_decision' => null, 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => null, 'venue_id' => 12, 'deleted_at' => null, 'created_at' => '2026-08-07 13:44:25', 'updated_at' => '2026-08-07 13:44:25'],
+            ['id' => 30, 'match_type' => 't20', 'format_overs' => 16, 'venue' => 'PHP', 'scheduled_at' => '2026-08-08 08:00:00', 'team_name' => 'Challenger Arif (EBL)', 'opponent_name' => 'Challenger Arif (WWW)', 'toss_winner' => 'team_a', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Challenger Arif (EBL) won by 71 runs', 'notes' => null, 'venue_id' => 9, 'deleted_at' => null, 'created_at' => '2026-08-07 22:21:09', 'updated_at' => '2026-08-10 13:02:59'],
+            ['id' => 31, 'match_type' => 't20', 'format_overs' => 18, 'venue' => 'Chottoground', 'scheduled_at' => '2026-08-15 08:00:00', 'team_name' => 'Challengers', 'opponent_name' => 'Cheragi Boys', 'toss_winner' => 'team_a', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Challengers won by 27 runs', 'notes' => null, 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-08-16 14:22:44', 'updated_at' => '2026-08-16 14:53:24'],
+            ['id' => 32, 'match_type' => 'football', 'format_overs' => 20, 'venue' => 'ATW Khulshi', 'scheduled_at' => '2026-08-12 19:00:00', 'team_name' => 'Challenger Red', 'opponent_name' => 'Challenger Blue', 'toss_winner' => null, 'toss_decision' => null, 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => null, 'venue_id' => 14, 'deleted_at' => null, 'created_at' => '2026-08-20 13:01:18', 'updated_at' => '2026-08-20 13:19:21'],
+            ['id' => 33, 'match_type' => 'football', 'format_overs' => 20, 'venue' => 'Fortune Sports Arena', 'scheduled_at' => '2026-08-19 19:00:00', 'team_name' => 'Challenger Red', 'opponent_name' => 'Challenger green', 'toss_winner' => null, 'toss_decision' => null, 'match_status' => 'completed', 'result_type' => null, 'result_summary' => null, 'notes' => null, 'venue_id' => 12, 'deleted_at' => null, 'created_at' => '2026-08-20 15:16:58', 'updated_at' => '2026-08-23 14:25:44'],
+            ['id' => 34, 'match_type' => 't20', 'format_overs' => 18, 'venue' => 'Chottoground', 'scheduled_at' => '2026-08-22 08:00:00', 'team_name' => 'Challenger Iqbal', 'opponent_name' => 'Challenger Reaz', 'toss_winner' => 'team_b', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Challenger Reaz won by 29 runs', 'notes' => null, 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-08-23 13:25:05', 'updated_at' => '2026-08-23 14:15:53'],
+            ['id' => 35, 'match_type' => 't20', 'format_overs' => 20, 'venue' => 'Bakolia, Stadium', 'scheduled_at' => '2026-08-26 08:00:00', 'team_name' => 'Chittagong Challengers', 'opponent_name' => 'Ultimate Crew', 'toss_winner' => 'team_a', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Ultimate Crew won by 2 wickets', 'notes' => null, 'venue_id' => 15, 'deleted_at' => null, 'created_at' => '2026-08-27 12:06:20', 'updated_at' => '2026-08-30 13:00:39'],
+            ['id' => 36, 'match_type' => 't20', 'format_overs' => 20, 'venue' => 'BKSP', 'scheduled_at' => '2026-08-29 08:30:00', 'team_name' => 'Team Shezan', 'opponent_name' => 'Team Himel', 'toss_winner' => 'team_b', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Team Himel won by 5 runs', 'notes' => null, 'venue_id' => 5, 'deleted_at' => null, 'created_at' => '2026-08-30 13:06:45', 'updated_at' => '2026-08-30 14:28:22'],
+            ['id' => 37, 'match_type' => 't20', 'format_overs' => 16, 'venue' => 'PHP', 'scheduled_at' => '2026-09-05 09:00:00', 'team_name' => 'Team Mehedi', 'opponent_name' => 'Team Himel', 'toss_winner' => 'team_a', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Team Himel won by 8 wickets', 'notes' => null, 'venue_id' => 9, 'deleted_at' => null, 'created_at' => '2026-09-05 15:06:08', 'updated_at' => '2026-09-05 15:29:17'],
+            ['id' => 38, 'match_type' => 't20', 'format_overs' => 20, 'venue' => 'Chottoground', 'scheduled_at' => '2026-09-12 07:00:00', 'team_name' => 'Team Lion', 'opponent_name' => 'Team Tiger', 'toss_winner' => 'team_a', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Team Lion won by 57 runs', 'notes' => null, 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-09-13 11:30:29', 'updated_at' => '2026-09-13 11:43:01'],
+            ['id' => 39, 'match_type' => 't20', 'format_overs' => 18, 'venue' => 'Chottoground', 'scheduled_at' => '2026-09-19 07:00:00', 'team_name' => 'Team Reaz', 'opponent_name' => 'Team Iqbal', 'toss_winner' => 'team_a', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Team Reaz won by 65 runs', 'notes' => null, 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-09-20 18:59:36', 'updated_at' => '2026-09-20 20:08:51'],
+            ['id' => 40, 'match_type' => 't20', 'format_overs' => 6, 'venue' => 'Chottoground', 'scheduled_at' => '2026-09-19 08:30:00', 'team_name' => 'Team Reaz', 'opponent_name' => 'Team Iqbal', 'toss_winner' => 'team_b', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Team Reaz won by 10 wickets', 'notes' => null, 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-09-20 19:42:53', 'updated_at' => '2026-09-20 19:51:18'],
+            ['id' => 41, 'match_type' => 't20', 'format_overs' => 15, 'venue' => 'Chottoground', 'scheduled_at' => '2026-09-26 07:30:00', 'team_name' => 'Team Herritage', 'opponent_name' => 'Team Royal', 'toss_winner' => 'team_b', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Team Royal won by 59 runs', 'notes' => null, 'venue_id' => 8, 'deleted_at' => null, 'created_at' => '2026-09-27 16:03:11', 'updated_at' => '2026-09-27 16:16:14'],
+            ['id' => 42, 'match_type' => 't20', 'format_overs' => 16, 'venue' => 'Railway Pologround', 'scheduled_at' => '2026-10-03 08:00:00', 'team_name' => 'Chittagong Challengers', 'opponent_name' => 'Holiday Cricketers', 'toss_winner' => 'team_b', 'toss_decision' => 'bat', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Holiday Cricketers won by 14 runs', 'notes' => null, 'venue_id' => 16, 'deleted_at' => null, 'created_at' => '2026-10-05 22:23:14', 'updated_at' => '2026-10-05 22:47:29'],
+            ['id' => 43, 'match_type' => 't20', 'format_overs' => 20, 'venue' => 'BKSP', 'scheduled_at' => '2026-10-10 07:00:00', 'team_name' => 'Sultan', 'opponent_name' => 'Legend', 'toss_winner' => 'team_b', 'toss_decision' => 'bowl', 'match_status' => 'completed', 'result_type' => null, 'result_summary' => 'Sultan won by 7 runs', 'notes' => null, 'venue_id' => 5, 'deleted_at' => null, 'created_at' => '2026-10-12 11:12:35', 'updated_at' => '2026-10-12 11:34:35'],
+        ], ['id']);
     }
 }
