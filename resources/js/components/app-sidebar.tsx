@@ -2,7 +2,9 @@ import { Link } from '@inertiajs/react';
 import {
     Boxes,
     CalendarClock,
+    Calculator,
     CalendarDays,
+    Landmark,
     Receipt,
     Wallet,
     FolderGit2,
@@ -44,6 +46,7 @@ import inventory from '@/routes/admin/inventory';
 import adminOrders from '@/routes/admin/orders';
 import adminProducts from '@/routes/admin/products';
 import adminDeposits from '@/routes/admin/deposits';
+import adminAccounts from '@/routes/admin/accounts';
 import adminExpenses from '@/routes/admin/expenses';
 import adminEvents from '@/routes/admin/events';
 import adminPlayers from '@/routes/admin/players';
@@ -100,19 +103,23 @@ const mainNavItems: NavItem[] = [
         ],
     },
     {
+        title: 'Accounts',
+        href: adminAccounts.index(),
+        icon: Landmark,
+        children: [
+            { title: 'Deposits', href: adminDeposits.index(), icon: Wallet },
+            { title: 'Expenses', href: adminExpenses.index(), icon: Receipt },
+            {
+                title: 'Accounts',
+                href: adminAccounts.index(),
+                icon: Calculator,
+            },
+        ],
+    },
+    {
         title: 'Newsletter',
         href: adminNewsletters.index(),
         icon: Mail,
-    },
-    {
-        title: 'Deposits',
-        href: adminDeposits.index(),
-        icon: Wallet,
-    },
-    {
-        title: 'Expenses',
-        href: adminExpenses.index(),
-        icon: Receipt,
     },
 ];
 

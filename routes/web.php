@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
@@ -116,6 +117,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('admin.expenses.contributors.update');
     Route::put('admin/matches/{match}/players', [MatchPlayerController::class, 'update'])
         ->name('admin.matches.players.update');
+    Route::get('admin/accounts', [AccountController::class, 'index'])->name('admin.accounts.index');
     Route::resource('admin/expenses', ExpenseManagementController::class)
         ->parameters(['expenses' => 'expense'])
         ->names('admin.expenses');

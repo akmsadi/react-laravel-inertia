@@ -462,3 +462,34 @@ test('expense contributors are limited to match players for match expenses', fun
     ]);
     expect($generalExpense->contributors()->pluck('players.id')->all())->toBe([$inMatch->id]);
 });
+
+test('accounts show deposited owed and balance per player', function () {
+    $ann = Player::create(['name' => 'Ann', 'nickname' => 'A', 'phone' => '1', 'address' => 'x', 'status' => 'approved']);
+    $bob = Player::create(['name' => 'Bob', 'nickname' => 'B', 'phone' => '2', 'address' => 'y', 'status' => 'approved']);
+    $guest = Player::create(['name' => 'Tom', 'nickname' => 'T', 'phone' => '3', 'address' => 'z', 'status' => 'guest', 'guest_of_player_id' => $ann->id]);
+    $match = Matches::create(['opponent_name' => 'Visitors']);
+    $match->players()->attach([$ann->id, $bob->id]);
+
+    PlayerDeposit::create(['player_id' => $ann->id, 'amount' => 300]);
+    PlayerDeposit::create(['player_id' => $ann->id, 'amount' => 200.5]);
+
+    $shared = Expense::create(['title' => 'Ground', 'amount' => 101, 'match_id' => $match->id]);
+    $shared->contributors()->attach([$ann->id, $bob->id]);
+    $solo = Expense::create(['title' => 'Kit', 'amount' => 50]);
+    $solo->contributors()->attach($ann->id);
+
+    $this->get(route('admin.accounts.index'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('admin/accounts/index')
+            ->has('accounts', 3)
+            ->where('accounts.0.name', 'Ann')
+            ->where('accounts.0.matches', 1)
+            ->where('accounts.0.deposited', 500.5)
+            ->where('accounts.0.owed', 100.5)
+            ->where('accounts.0.balance', 400)
+            ->where('accounts.1.owed', 50.5)
+            ->where('accounts.1.balance', -50.5)
+            ->where('accounts.2.name', 'Tom (Guest Ann)')
+            ->where('totals.deposited', 500.5)
+            ->where('totals.owed', 151));
+});

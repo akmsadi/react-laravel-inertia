@@ -94,3 +94,14 @@ export type Expense = {
     created_at: string | null;
     match?: MatchOption | null;
 };
+
+export type PlayerAccount = {
+    id: number;
+    name: string;
+    phone: string;
+    status: Player['status'];
+    matches: number;
+    deposited: number;
+    owed: number;
+    balance: number;
+};
