@@ -82,7 +82,7 @@ export default function ProductsIndex({
                     </p>
                 </div>
 
-                <div className="mb-8 flex flex-wrap items-center gap-3 rounded-lg bg-white p-4 shadow">
+                <div className="mb-8 flex flex-wrap items-center gap-3 bg-white">
                     <select
                         aria-label="Category"
                         className={selectClass}
@@ -137,7 +137,7 @@ export default function ProductsIndex({
                     </p>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {products.data.map((product) => (
                         <Link
                             key={product.id}

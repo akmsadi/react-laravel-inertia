@@ -79,7 +79,25 @@ export default function CategoryForm({
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="image_url">Image URL</Label>
+                        <Label htmlFor="image">Image</Label>
+                        {category?.image_url && (
+                            <img
+                                src={category.image_url}
+                                alt={category.name}
+                                className="h-24 w-24 rounded-md border object-cover"
+                            />
+                        )}
+                        <Input
+                            id="image"
+                            name="image"
+                            type="file"
+                            accept="image/*"
+                        />
+                        <InputError message={errors.image} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="image_url">or image URL</Label>
                         <Input
                             id="image_url"
                             name="image_url"

@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\ProductCategory;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -32,7 +35,7 @@ class CategoryController extends Controller
 
     public function store(StoreCategoryRequest $request): RedirectResponse
     {
-        ProductCategory::create($this->attributes($request->validated()));
+        ProductCategory::create($this->attributes($request));
 
         return to_route('categories.index');
     }
@@ -52,7 +55,13 @@ class CategoryController extends Controller
 
     public function update(UpdateCategoryRequest $request, ProductCategory $category): RedirectResponse
     {
-        $category->update($this->attributes($request->validated()));
+        $attributes = $this->attributes($request);
+
+        if ($request->hasFile('image')) {
+            $this->deleteStoredImage($category->image_url);
+        }
+
+        $category->update($attributes);
 
         return to_route('categories.index');
     }
@@ -65,6 +74,7 @@ class CategoryController extends Controller
             ]);
         }
 
+        $this->deleteStoredImage($category->image_url);
         $category->delete();
 
         return to_route('categories.index');
@@ -82,13 +92,34 @@ class CategoryController extends Controller
     }
 
     /**
-     * @param  array<string, mixed>  $validated
      * @return array<string, mixed>
      */
-    private function attributes(array $validated): array
+    private function attributes(FormRequest $request): array
     {
+        $validated = $request->validated();
+        unset($validated['image']);
+
         $validated['sort_order'] ??= 0;
 
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('category-images', 'public');
+
+            if ($path === false) {
+                throw ValidationException::withMessages(['image' => 'The image could not be saved. Check storage permissions.']);
+            }
+
+            $validated['image_url'] = Storage::disk('public')->url($path);
+        }
+
         return $validated;
+    }
+
+    private function deleteStoredImage(?string $imageUrl): void
+    {
+        $prefix = Storage::disk('public')->url('');
+
+        if ($imageUrl && str_starts_with($imageUrl, $prefix)) {
+            Storage::disk('public')->delete(substr($imageUrl, strlen($prefix)));
+        }
     }
 }

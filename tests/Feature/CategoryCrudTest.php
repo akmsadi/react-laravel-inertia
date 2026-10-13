@@ -3,6 +3,8 @@
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
     $this->actingAs(User::factory()->create());
@@ -84,4 +86,37 @@ test('a category with products cannot be deleted', function () {
         ->assertSessionHasErrors('category');
 
     $this->assertDatabaseHas('product_categories', ['id' => $product->category_id]);
+});
+
+test('a category image can be uploaded and is replaced on update', function () {
+    Storage::fake('public');
+    $prefix = Storage::disk('public')->url('');
+
+    $this->post(route('categories.store'), [
+        'name' => 'Cricket Bats',
+        'is_active' => '1',
+        'image' => UploadedFile::fake()->image('bats.jpg'),
+    ])->assertRedirect(route('categories.index'));
+
+    $category = ProductCategory::firstWhere('slug', 'cricket-bats');
+    $oldPath = substr($category->image_url, strlen($prefix));
+    expect($oldPath)->toStartWith('category-images/');
+    Storage::disk('public')->assertExists($oldPath);
+
+    $this->put(route('categories.update', $category), [
+        'name' => 'Cricket Bats',
+        'slug' => 'cricket-bats',
+        'is_active' => '1',
+        'image' => UploadedFile::fake()->image('new.jpg'),
+    ])->assertRedirect(route('categories.index'));
+
+    Storage::disk('public')->assertMissing($oldPath);
+    Storage::disk('public')->assertExists(substr($category->refresh()->image_url, strlen($prefix)));
+});
+
+test('category image must be an image', function () {
+    $this->post(route('categories.store'), [
+        'name' => 'Bats',
+        'image' => UploadedFile::fake()->create('doc.pdf', 10, 'application/pdf'),
+    ])->assertSessionHasErrors('image');
 });

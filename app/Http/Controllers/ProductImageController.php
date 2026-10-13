@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class ProductImageController extends Controller
 {
@@ -15,9 +16,17 @@ class ProductImageController extends Controller
     {
         $validated = $request->validated();
 
-        $url = $request->hasFile('image')
-            ? Storage::disk('public')->url($request->file('image')->store('product-images', 'public'))
-            : $validated['image_url'];
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('product-images', 'public');
+
+            if ($path === false) {
+                throw ValidationException::withMessages(['image' => 'The image could not be saved. Check storage permissions.']);
+            }
+
+            $url = Storage::disk('public')->url($path);
+        } else {
+            $url = $validated['image_url'];
+        }
 
         $image = $product->images()->create([
             'image_url' => $url,
